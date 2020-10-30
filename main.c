@@ -10,7 +10,7 @@ typedef struct cliente
     char nome[CHAR_MAX];
     char endereco[CHAR_MAX];
     char email[CHAR_MAX];
-} Cliente;
+} 
 
 typedef struct produto
 {
