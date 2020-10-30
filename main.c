@@ -12,7 +12,7 @@ typedef struct cliente
     char email[CHAR_MAX];
 } Cliente;
 
-//Apenas testes
+//Apenas testesss
 
 typedef struct produto
 {
