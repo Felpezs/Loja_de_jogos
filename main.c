@@ -12,6 +12,8 @@ typedef struct cliente
     char email[CHAR_MAX];
 } Cliente;
 
+//Apenas testesss
+
 typedef struct produto
 {
     int id;
