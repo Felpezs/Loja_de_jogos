@@ -1,8 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <locale.h>
+#include <string.h>
 
 #define CHAR_MAX 100
+#define VENDAS_BUFFER 5
 
 typedef struct cliente
 {
@@ -21,14 +23,16 @@ typedef struct produto
     char nome[CHAR_MAX];
     char categoria[CHAR_MAX];
     int quantidade;
-    int preco;
+    float preco;
 } Produto;
 
 typedef struct venda
 {
     int id_comprador;
-    int id_produto;
-    int lucro;
+    char categoria[CHAR_MAX];
+    char nome[CHAR_MAX];
+    int quantidade;
+    float lucro;
 } Venda;
 
 void Cadastrar_Cliente(Cliente**, int*);
@@ -36,13 +40,12 @@ void Cadastrar_Produto(Produto**, int*);
 void Consultar(Cliente**, Produto**, Venda**, int*, int*, int*);
 void Atualizar_Cliente(Cliente**, int*);
 void Atualizar_Produto(Produto**, int*);
-void Comprar(Cliente**, Produto**, Venda**, int*, int*, int*);
+void Comprar(Cliente**, Produto**, Venda**, int*, int*, int*, int*);
 
 int main()
 {
     /*===========================================================
                  Sistema de Estoque de Loja de Jogos
-
     Projeto desenvolvido pelos integrantes:          
     -> Jonatas Goes da Silva                          
     -> Felipe Eduardo                            
@@ -53,6 +56,7 @@ int main()
 
     int resp;
     int qntd_clientes = 0, qntd_produtos = 0, qntd_vendas = 0, tela_desejada = 0;
+    int ctrl_vendasBuffer = 0;
 
     Cliente *clientes;  
     Produto *produtos;
@@ -64,7 +68,6 @@ int main()
     OPÇÃO 3: Tela de atualização de dados de produtos ou clientes dependendo da escolha
     OPÇÃO 4: Tela de compra de produtos
     OPÇÃO 5: Encerra o programa
-    
     OBS.: Após o encerramento de uso em cada tela, o usuário voltará para a tela principal*/
 
     //Loop para permanência na tela inicial
@@ -77,7 +80,7 @@ int main()
         printf("- Consultar(2)\n");
         printf("- Atualizar(3)\n");
         printf("- Comprar(4)\n");
-        printf("- Sair(5)\n\n>>");
+        printf("- Sair(5)\n\n>> ");
         scanf("%d", &resp);
 
         switch (resp)
@@ -115,12 +118,6 @@ int main()
 
             //Opcao de Consultar Clientes e Produtos
             case 2:
-                //se não houver clientes ou produtos, não há a opção de consulta
-                if((qntd_clientes == 0) || (qntd_produtos == 0))
-                {
-                    printf("\nNão há clientes ou produtos cadastrados!\n");
-                    break;
-                }
                 Consultar(&clientes, &produtos, &vendas, &qntd_clientes, &qntd_produtos, &qntd_vendas);
             break;
 
@@ -174,15 +171,7 @@ int main()
             
             //Opcao de Comprar Produtos
             case 4:
-
-                //se não houver clientes ou produtos, não há a opção de consulta
-                if((qntd_clientes == 0) || (qntd_produtos == 0))
-                {
-                    printf("\nNão há clientes ou produtos cadastrados!\n");
-                    break;
-                }
-                
-                Comprar(&clientes, &produtos, &vendas, &qntd_clientes, &qntd_produtos, &qntd_vendas);
+                Comprar(&clientes, &produtos, &vendas, &qntd_clientes, &qntd_produtos, &qntd_vendas, &ctrl_vendasBuffer);
             break;
         }
 
@@ -221,13 +210,13 @@ void Cadastrar_Cliente(Cliente **clientes, int *n_clientes)
             scanf("%d", &(*clientes+i)->cpf);
             
             printf("Nome: ");
-            scanf("%s", &(*clientes+i)->nome);
+            scanf("%s", (*clientes+i)->nome);
 
             printf("Endereço: ");
-            scanf("%s", &(*clientes+i)->endereco);
+            scanf("%s", (*clientes+i)->endereco);
             
             printf("Email: ");
-            scanf("%s", &(*clientes+i)->email);
+            scanf("%s", (*clientes+i)->email);
         }
         printf("Registrado com sucesso!\n");
     }
@@ -253,13 +242,13 @@ void Cadastrar_Cliente(Cliente **clientes, int *n_clientes)
             scanf("%d", &(*clientes+i)->cpf);
             
             printf("Nome: ");
-            scanf("%s", &(*clientes+i)->nome);
+            scanf("%s", (*clientes+i)->nome);
 
             printf("Endereço: ");
-            scanf("%s", &(*clientes+i)->endereco);
+            scanf("%s", (*clientes+i)->endereco);
             
             printf("Email: ");
-            scanf("%s", &(*clientes+i)->email);
+            scanf("%s", (*clientes+i)->email);
         }
         printf("Registrado com sucesso!\n");
     }
@@ -292,16 +281,16 @@ void Cadastrar_Produto(Produto** produtos, int *n_produtos)
             scanf("%d", &(*produtos+i)->id);
 
             printf("Nome: ");
-            scanf("%s", &(*produtos+i)->nome);
+            scanf("%s", (*produtos+i)->nome);
             
             printf("Categoria: ");
-            scanf("%s", &(*produtos+i)->categoria);
+            scanf("%s", (*produtos+i)->categoria);
 
             printf("Quantidade: ");
             scanf("%d", &(*produtos+i)->quantidade);
 
             printf("Preco: ");
-            scanf("%d", &(*produtos+i)->preco);
+            scanf("%f", &(*produtos+i)->preco);
         }
         printf("Registrado com sucesso!\n");
     }
@@ -324,16 +313,16 @@ void Cadastrar_Produto(Produto** produtos, int *n_produtos)
             scanf("%d", &(*produtos+i)->id);
             
             printf("Nome: ");
-            scanf("%s", &(*produtos+i)->nome);
+            scanf("%s", (*produtos+i)->nome);
 
             printf("Categoria: ");
-            scanf("%s", &(*produtos+i)->categoria);
+            scanf("%s", (*produtos+i)->categoria);
 
             printf("Quantidade: ");
             scanf("%d", &(*produtos+i)->quantidade);
 
             printf("Preco: ");
-            scanf("%d", &(*produtos+i)->preco);
+            scanf("%f", &(*produtos+i)->preco);
         }
 
         printf("Registrado com sucesso!\n");
@@ -348,54 +337,89 @@ void Cadastrar_Produto(Produto** produtos, int *n_produtos)
 void Consultar(Cliente** clientes, Produto** produtos, Venda** vendas, int* n_clientes, int* n_produtos, int* n_vendas)
 {
     int _veroque;
-
     system("cls||clear");
 
     // Submenu para ver clientes ou produtos
-    printf("\tCONSULTAR DADOS CADASTRAIS\t\t\n");
-    printf("\n- Clientes(1)\n- Produtos(2)\n- Vendas(3)\n- Retornar(4)\n\n>> ");
+    printf("\tCONSULTAR DADOS CADASTRAIS\n");
+    printf("Ver\n(1) Clientes\n(2) Produtos\n(3) Vendas\n>> ");
     scanf("%d", &_veroque);
 
     // Consultar os dados dos clientes
     if(_veroque == 1)
     {
-        for(int i = 0; i < *n_clientes; ++i)
+        // Exibir que não existem registros
+        if(*n_clientes == 0)
         {
-            printf("Cliente (%d)\n", i+1);
-            printf("\tCódigo:\t\t%d\n", (*clientes+i)->id);
-            printf("\tCPF:\t%d\n", (*clientes+i)->cpf);
-            printf("\tNome:\t%s\n", (*clientes+i)->nome);
-            printf("\tEndereço:\t%s\n", (*clientes+i)->endereco);
-            printf("\tEmail:\t%s\n", (*clientes+i)->email);
+            printf("Nenhum registro encontrado.\n");
+        }
+        // Senão exibir os registros do sistema
+        else
+        {
+            for(int i = 0; i < *n_clientes; ++i)
+            {
+                printf("Registro Cliente nº(%d)\n", i+1);
+                printf("\tCódigo:   %d\n", (*clientes+i)->id);
+                printf("\tCPF:      %d\n", (*clientes+i)->cpf);
+                printf("\tNome:     %s\n", (*clientes+i)->nome);
+                printf("\tEndereço: %s\n", (*clientes+i)->endereco);
+                printf("\tEmail:    %s\n", (*clientes+i)->email);
+            }
         }
     }
     // Consultar os dados dos produtos
     else if(_veroque == 2)
     {
-        for(int i = 0; i < *n_produtos; ++i)
+        // Exibir que não existem registros
+        if(*n_produtos == 0)
         {
-            printf("Produto (%d)\n", i+1);
-            printf("\tCódigo:\t\t%d\n", (*produtos+i)->id);
-            printf("\tCódigo:\t\t%s\n", (*produtos+i)->nome);
-            printf("\tCategoria:\t%s\n", (*produtos+i)->categoria);
-            printf("\tQuantidade:\t%d\n", (*produtos+i)->quantidade);
-            printf("\tPreco:\t%d\n", (*produtos+i)->preco);
+            printf("Nenhum registro encontrado.\n");
+        }
+        // Senão exibir os registros do sistema
+        else
+        {
+            for(int i = 0; i < *n_produtos; ++i)
+            {
+                printf("Registro Produto nº(%d)\n", i+1);
+                printf("\tCódigo:     %d\n", (*produtos+i)->id);
+                printf("\tNome:       %s\n", (*produtos+i)->nome);
+                printf("\tCategoria:  %s\n", (*produtos+i)->categoria);
+                printf("\tQuantidade: %d\n", (*produtos+i)->quantidade);
+                printf("\tPreco:    R$%.2f\n", (*produtos+i)->preco);
+            }
         }
     }
+    // Consultar os dados das vendas
     else if(_veroque == 3)
     {
-       for(int i = 0; i < *n_vendas; ++i)
+        // Exibir que não existem registros
+        if(*n_vendas == 0)
         {
-            printf("Venda (%d)\n", i+1);
-            printf("\tCódigo Cliente:\t\t%d\n", (*vendas+i)->id_comprador);
-            printf("\tCódigo Produto:\t%d\n", (*vendas+i)->id_produto);
-            printf("\tLucro:\t%d\n", (*vendas+i)->lucro);
-        } 
+            printf("Nenhum registro encontrado.\n");
+        }
+        // Senão exibir os registros do sistema
+        else
+        {
+            // Valor total arrecadado das vendas
+            float _totalVendas = 0;
+
+            for(int i = 0; i < *n_vendas; ++i)
+            {
+                printf("Registro Venda nº(%d)\n", i+1);
+                printf("\tCódigo Cliente: %d\n", (*vendas+i)->id_comprador);
+                printf("\tCategoria Jogo: %s\n", (*vendas+i)->categoria);
+                printf("\tNome Jogo:      %s\n", (*vendas+i)->nome);
+                printf("\tQuantidade:     %d\n", (*vendas+i)->quantidade);
+                printf("\tLucro:        R$%.2f\n", (*vendas+i)->lucro);
+
+                _totalVendas += (*vendas+i)->lucro;
+            }
+
+            printf("\nTotal arrecadado: R$%.2f\n", _totalVendas);
+        }
     }
 
-    //O usuário não saírá da tela enquanto não digitar a tecla enter
-    printf("\nPressione [Enter] para continuar.\n");
-    while(getchar()!='\n')
+    printf("\nPressione [Enter] para continuar.\n>> ");
+    while(getchar()!='\n');
     getchar();
 }
 
@@ -446,12 +470,12 @@ void Atualizar_Cliente(Cliente** clientes, int *n_clientes)
 
                 case 3:
                     printf("Digite o novo endereço do cliente (%d):\n>>", i+1);
-                    scanf("%s", &(*clientes+i)->endereco);
+                    scanf("%s", (*clientes+i)->endereco);
                 break;
 
                 case 4:
                     printf("Digite o novo email do cliente (%d):\n>>", i+1);
-                    scanf("%s", &(*clientes+i)->email);   
+                    scanf("%s", (*clientes+i)->email);   
                 break;
             } 
         }
@@ -505,7 +529,7 @@ void Atualizar_Produto(Produto** produtos, int *n_produtos)
 
                 case 2:
                     printf("Digite a nova categoria do produto (%d):\n>>", i+1);
-                    scanf("%s", &(*produtos+i)->categoria);   
+                    scanf("%s", (*produtos+i)->categoria);   
                 break;
 
                 case 3:
@@ -527,13 +551,15 @@ void Atualizar_Produto(Produto** produtos, int *n_produtos)
     getchar();
 }
 
-void Comprar(Cliente** clientes, Produto** produtos, Venda** vendas, int* n_clientes, int* n_produtos, int* n_vendas)
+void Comprar(Cliente** clientes, Produto** produtos, Venda** vendas, int* n_clientes, int* n_produtos, int* n_vendas, int* ctrl_vendasBuffer)
 {
-    int _userID, _prodID = 0, _prodQntd;
-    
+    int _userID, _prodQntd;
+    char _prodCat[CHAR_MAX] = "", _prodNome[CHAR_MAX];
     system("cls||clear");
-    printf("\tCOMPRAR PRODUTO\n");
-    printf("Código do cliente: ");
+
+    // Submenu para comprar um produto
+    printf("\tCOMPRAR JOGO\n");
+    printf("Código do cliente:\n>> ");
     scanf("%d", &_userID);
 
     // Verificar se o Código fornecido (ID) do CLIENTE está cadastrado
@@ -543,80 +569,120 @@ void Comprar(Cliente** clientes, Produto** produtos, Venda** vendas, int* n_clie
         {
             // Usuário está cadastrado! 
             // Pedir o ID do produto e a quantidade
-            printf("Código do produto: ");
-            scanf("%d", &_prodID);
-            printf("Quantidade desejada: ");
+            printf("Categoria do jogo:\n>> ");
+            scanf("%s", _prodCat);
+            printf("Nome do jogo:\n>> ");
+            scanf("%s", _prodNome);
+            printf("Quantidade desejada:\n>> ");
             scanf("%d", &_prodQntd);
+
+            break;
         }
-        else if(i >= (*n_clientes - 1))
-        {
-            // Usuário não está cadastrado!
-            // Solicitar que faça um cadas
-            printf("Usuário não está cadastrado!\nFaça seu cadastro no menu principal.\n");
-        }
+        // else if(i >= (*n_clientes - 1))
+        // {
+        //     // Usuário não está cadastrado!
+        //     // Solicitar que faça seu cadastro no sistema
+        //     printf("Usuário não está cadastrado!\nFaça seu cadastro no menu principal.\n");
+
+        //     printf("\nPressione [Enter] para continuar.\n>> ");
+        //     while(getchar()!='\n');
+        //     getchar();
+        //     //FIM
+        // }
     }
     
-    /* Verificar se o Código fornecido (ID) do PRODUTO está cadastrado */
-
     /* Não verificar o produto(loop abaixo) caso o usuário não esteja cadastrado
      * Obs: a variável _prodID fará esse controle, portanto:
      * Para _prodID == 0: o usuário não está cadastrado
      * Para _prodId != 0: o usuário está cadastrado e solicitou um produto
      */
-    if(_prodID == 0)
+    if(strcmp(_prodCat, "") == 0)
+    {
+        // Usuário não está cadastrado!
+        // Solicitar que faça seu cadastro no sistema
+        printf("Usuário não está cadastrado!\nFaça seu cadastro no menu principal.\n");
+
+        printf("\nPressione [Enter] para continuar.\n>> ");
+        while(getchar()!='\n');
+        getchar();
+        // FIM
         return;
-    
+    }
+
+    /* Verificar se o Código fornecido (ID) do PRODUTO está cadastrado */
     int i = 0;
     //Loop enquanto o codigo procurado nao for igual ao codigo pedido ou nao ser encontrado
     do
     {
-        if((*produtos+i)->id == _prodID)            //se o codigo procurado for igual ao codigo pedido
+        if(strcmp((*produtos+i)->categoria, _prodCat) == 0)            //se o codigo procurado for igual ao codigo pedido
         {
-            if((*produtos+i)->quantidade >= _prodQntd)   //se a quantidade desejada estiver disponivel
+            if(strcmp((*produtos+i)->nome, _prodNome) == 0)
             {
-                // A compra foi realizada com sucesso!
-                printf("Produto disponivel. A quantidade desejada foi retirada do estoque\n");
-                (*produtos+i)->quantidade -= _prodQntd;           //decrementa a qntd desejada
-
-                // Contabilizar mais uma venda
-                // OBS: LEMBRAR PARA MELHORAR ESTA PART
-                *n_vendas += 1;
-
-                if(*n_vendas == 0)
+                if((*produtos+i)->quantidade >= _prodQntd)   //se a quantidade desejada estiver disponivel
                 {
-                    // Fazer a alocação dinâmica inicial
-                    *vendas = (Venda*) malloc(*n_vendas * sizeof(Venda));
+                    // A compra foi realizada com sucesso!
+                    printf("Produto disponivel. A quantidade desejada foi retirada do estoque\n");
+                    (*produtos+i)->quantidade -= _prodQntd;           //decrementa a qntd desejada
+
+                    // Contabilizar mais uma venda
+                    *n_vendas += 1;
+
+                    // Realizar o malloc caso a quantidade de vendas for a primeira
+                    if(*n_vendas == 1)
+                    {
+                        // Fazer a alocação dinâmica inicial com o tamanho do buffer
+                        *vendas = (Venda*) malloc(VENDAS_BUFFER * sizeof(Venda));
+                        *ctrl_vendasBuffer += 1;
+                    }
+                    // Ou realloc quando a quantidade de vendas estourar o valor do buffer
+                    else if(*n_vendas > (VENDAS_BUFFER * (*ctrl_vendasBuffer)))
+                    {
+                        // Incrementar mais uma quantidade de vezes do buffer de vendas
+                        *ctrl_vendasBuffer += 1;
+                        
+                        // Fazer a realocação dinâmica
+                        *vendas = (Venda*) realloc(*vendas, (VENDAS_BUFFER * (*ctrl_vendasBuffer)) * sizeof(Venda));               
+                    }
+                    
+                    // Registrar os dados na estrutura vendas
+                    (*vendas + (*n_vendas - 1))->id_comprador = _userID;
+                    strcpy((*vendas + (*n_vendas - 1))->categoria, (*produtos+i)->categoria);
+                    strcpy((*vendas + (*n_vendas - 1))->nome, (*produtos+i)->nome);
+                    (*vendas + (*n_vendas - 1))->quantidade = _prodQntd;
+                    (*vendas + (*n_vendas - 1))->lucro = ((*produtos+i)->preco * _prodQntd);
+
+                    printf("\nRESUMO DA COMPRA:\n");
+                    printf("ID COMPRADOR:      %d\n", (*vendas + (*n_vendas - 1))->id_comprador);
+                    printf("CATEGORIA PRODUTO: %s\n", (*vendas + (*n_vendas - 1))->categoria);
+                    printf("NOME PRODUTO:      %s\n", (*vendas + (*n_vendas - 1))->nome);
+                    printf("QUANTIDADE:        %d\n", (*vendas + (*n_vendas - 1))->quantidade);
+                    printf("LUCRO:             %.2f\n", (*vendas + (*n_vendas - 1))->lucro);
+
+                    break;
                 }
                 else
                 {
-                    // Fazer a realocação dinâmica
-                    *vendas = (Venda*) realloc(*vendas, *n_vendas * sizeof(Venda));                    
+                    printf("ESTOQUE INSUFICIENTE.\n");
+                    break; 
                 }
-                
-                (*vendas + (*n_vendas - 1))->id_comprador = _userID;
-                (*vendas + (*n_vendas - 1))->id_produto = _prodID;
-                (*vendas + (*n_vendas - 1))->lucro = ((*produtos+i)->preco * _prodQntd);
-
-                printf("\nID COMPRADOR:%d\n", (*vendas + (*n_vendas - 1))->id_comprador);
-                printf("ID PRODUTO:%d\n", (*vendas + (*n_vendas - 1))->id_produto);
-                printf("LUCRO:%d\n", (*vendas + (*n_vendas - 1))->lucro);
             }
-            else
-                 printf("ESTOQUE INSUFICIENTE DA MERCADORIA\n");
-            break; 
+            else if (i >= (*n_produtos - 1))
+            {
+                printf("NOME DO JOGO NÃO ENCONTRADO.\n");
+                break;
+            }
         }
-        else if (i >= (*n_produtos))
+        else if (i >= (*n_produtos - 1))
         {
-            printf("MERCADORIA NAO CADASTRADA\n");
+            printf("CATEGORIA NÃO ENCONTRADA.\n");
             break;
         } 
 
         i++; 
     }
-    while((i <= (*n_produtos)) || ((*produtos+i)->id != _prodID));
+    while((i <= (*n_produtos)) || (strcmp((*produtos+i)->categoria, _prodCat) != 0));
 
-    //O usuário não saírá da tela enquanto não digitar a tecla enter
-    printf("\nPressione [Enter] para continuar.\n");
+    printf("\nPressione [Enter] para continuar.\n>> ");
     while(getchar()!='\n');
     getchar();
 }
