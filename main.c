@@ -179,7 +179,7 @@ void Cadastrar_Cliente(Cliente **clientes, int *n_clientes)
                 
                 printf("CPF: ");
                 scanf("%d", &(*clientes+i)->cpf);
-
+      
                 /*Entrada dos dados do tipo string é feita pelo fgets
                 para evitar que as strings sejam distribuidas erroneamente por conta 
                 de espaços em branco, utilizou-se o strcspn, substituindo por "0"
