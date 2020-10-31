@@ -38,6 +38,8 @@ void Cadastrar_Produto(Produto**, int*);
 void Consultar(Cliente**, Produto**, Venda**, int*, int*, int*);
 void Atualizar_Cliente(Cliente**, int*);
 void Atualizar_Produto(Produto**, int*);
+void Excluir_Cliente();
+void Excluir_Produto();
 void Comprar(Cliente**, Produto**, Venda**, int*, int*, int*, int*);
 void Loop_Tela();
 
@@ -67,7 +69,8 @@ int main()
     OPÇÃO 3: Tela de atualização de dados de produtos ou clientes dependendo da escolha
     OPÇÃO 4: Tela de compra de produtos
     OPÇÃO 5: Encerra o programa
-    OBS.: Após o encerramento de uso em cada tela, o usuário voltará para a tela principal*/
+    OBS.: Após o encerramento de uso em cada tela, o usuário voltará para a tela principal
+    system("cls||clear") = Executa a limpeza de tela*/
 
     //Loop para permanência na tela inicial
 
@@ -75,28 +78,20 @@ int main()
     {
         printf("\t\tSISTEMA DE ESTOQUE E COMPRA DE JOGOS\n\n");
         printf("Escolha uma opção para prosseguir:\n\n");
-        printf("- Cadastrar(1)\n");
-        printf("- Consultar(2)\n");
-        printf("- Atualizar(3)\n");
-        printf("- Comprar(4)\n");
-        printf("- Sair(5)\n\n>> ");
+        printf("- Cadastrar(1)\n- Consultar(2)\n- Atualizar(3)\n- Comprar(4)\n- Sair(5)\n\n>> ");
         scanf("%d", &resp);
 
         switch (resp)
         {
-            //Opcao de Cadastro de Clientes ou Produtos
             case 1:
                 do
                 {
-                    //Limpeza de Tela
                     system("cls||clear");
                     
                     //Submenu de Cadastro
                     printf("\t\tCADASTRO\n\n");
                     printf("Escolha uma opção para prosseguir:\n");
-                    printf("- Clientes (1)\n");
-                    printf("- Produtos (2)\n");
-                    printf("- Retornar (3)\n\n>>");
+                    printf("- Clientes (1)\n- Produtos (2)\n- Retornar (3)\n\n>> ");
                     scanf("%d", &tela_desejada);
 
                     switch (tela_desejada)
@@ -109,32 +104,23 @@ int main()
                             Cadastrar_Produto(&produtos, &qntd_produtos);
                         break;
                     }
-        
-                    //Limpeza de Tela
-                    system("cls||clear");
 
                 }while(tela_desejada !=3);
             break;
 
-            //Opcao de Consultar Clientes e Produtos
             case 2:
                 Consultar(&clientes, &produtos, &vendas, &qntd_clientes, &qntd_produtos, &qntd_vendas);
             break;
 
-            //Opcao de Atualizar Clientes ou Produtos
             case 3:
-
                 do
                 {
-                    //Limpeza de Tela
                     system("cls||clear");
 
                     //Submenu de Atualização
-                    printf("\t\tATUALIZAR\n\n");
+                    printf("\t\tATUALIZAR DADOS\n\n");
                     printf("Escolha uma opção para prosseguir:\n");
-                    printf("- Clientes (1)\n");
-                    printf("- Produtos (2)\n");
-                    printf("- Retornar (3)\n\n>>");
+                    printf("- Clientes (1)\n- Produtos (2)\n- Retornar (3)\n\n>> ");
                     scanf("%d", &tela_desejada);
 
                     switch (tela_desejada)
@@ -148,20 +134,14 @@ int main()
                             Atualizar_Produto(&produtos, &qntd_produtos);
                         break;
                     }
-        
-                    //Limpeza de Tela
-                    system("cls||clear");
 
                 }while(tela_desejada !=3);
             break;
-            
-            //Opcao de Comprar Produtos
+
             case 4:
                 Comprar(&clientes, &produtos, &vendas, &qntd_clientes, &qntd_produtos, &qntd_vendas, &ctrl_vendasBuffer);
             break;
         }
-
-        //Limpeza de Tela
         system("cls||clear");
     }
     while(resp !=5);
@@ -177,10 +157,10 @@ void Cadastrar_Cliente(Cliente **clientes, int *n_clientes)
 
     printf("\t\tCADASTRO DE CLIENTES\t\n\n");
 
-    //Verificar se é a primeira execucao do programa
+    //Verificar se é a primeira execucao do programa para fazer o malloc ou realloc
     if(*n_clientes == 0)
     {
-        printf("Digite a quantidade de clientes a ser cadastrada:\n\n>>");
+        printf("Digite a quantidade de clientes a ser cadastrada:\n\n>> ");
         scanf("%d", &*n_clientes);
 
         if(*n_clientes <= 0)
@@ -191,27 +171,32 @@ void Cadastrar_Cliente(Cliente **clientes, int *n_clientes)
             //Alocacao dinamica com malloc
             *clientes = (Cliente*) malloc(*n_clientes * sizeof(Cliente));
 
-            //Cadastramento de produtos
+            //Cadastramento de clientes
             for(i = 0; i < *n_clientes; ++i)
             {
                 printf("Preencha os dados do Cliente (%d):\nID: ", i+1);
                 scanf("%d", &(*clientes+i)->id);
                 
-                printf("Cpf: ");
+                printf("CPF: ");
                 scanf("%d", &(*clientes+i)->cpf);
-                
-                fflush(stdin);
+
+                /*Entrada dos dados do tipo string é feita pelo fgets
+                para evitar que as strings sejam distribuidas erroneamente por conta 
+                de espaços em branco, utilizou-se o strcspn, substituindo por "0"
+                quando é encontrado o "\n"*/
 
                 printf("Nome: ");
-
+                fflush(stdin);
                 fgets((*clientes+i)->nome, CHAR_MAX, stdin);
                 (*clientes+i)->nome[strcspn((*clientes+i)->nome, "\n")] = 0;
 
                 printf("Endereço: ");
+                fflush(stdin);
                 fgets((*clientes+i)->endereco, CHAR_MAX, stdin);
                 (*clientes+i)->nome[strcspn((*clientes+i)->endereco, "\n")] = 0;
 
                 printf("Email: ");
+                fflush(stdin);
                 fgets((*clientes+i)->email, CHAR_MAX, stdin);
                 (*clientes+i)->nome[strcspn((*clientes+i)->email, "\n")] = 0;
             }
@@ -223,7 +208,7 @@ void Cadastrar_Cliente(Cliente **clientes, int *n_clientes)
     else
     {   
         int _qnt;
-        printf("Digite a quantidade de clientes a ser cadastrada:\n>>");
+        printf("Digite a quantidade de clientes a ser cadastrada:\n>> ");
         scanf("%d", &_qnt);
 
         if(_qnt <= 0)
@@ -236,41 +221,36 @@ void Cadastrar_Cliente(Cliente **clientes, int *n_clientes)
             //Realocacao dinamica com realloc
             *clientes = (Cliente*) realloc(*clientes, *n_clientes * sizeof(Cliente));
 
-            //Cadastramento de produtos 
+            //Cadastramento de clientes 
             for(int i = (*n_clientes - _qnt); i < *n_clientes; ++i)
             {
                 printf("Preencha os dados do Cliente (%d):\nID: ", i+1);
                 scanf("%d", &(*clientes+i)->id);
                 
-                printf("Cpf: ");
+                printf("CPF: ");
                 scanf("%d", &(*clientes+i)->cpf);
-                
-                fflush(stdin);
 
                 printf("Nome: ");
-
-                /*Entrada dos dados do tipo string é feita pelo fgets
-                para evitar que as strings sejam distribuidas erroneamente por conta 
-                de espaços em branco, utilizou-se o strcspn, substituindo por "0"
-                quando é encontrado o "\n"*/
-
+                fflush(stdin);
                 fgets((*clientes+i)->nome, CHAR_MAX, stdin);
                 (*clientes+i)->nome[strcspn((*clientes+i)->nome, "\n")] = 0;
 
                 printf("Endereço: ");
+                fflush(stdin);
                 fgets((*clientes+i)->endereco, CHAR_MAX, stdin);
                 (*clientes+i)->nome[strcspn((*clientes+i)->endereco, "\n")] = 0;
 
                 printf("Email: ");
+                fflush(stdin);
                 fgets((*clientes+i)->email, CHAR_MAX, stdin);
                 (*clientes+i)->nome[strcspn((*clientes+i)->email, "\n")] = 0;
             }
             printf("Registrado com sucesso!\n");
         }
-
     }
-
     Loop_Tela();
+
+    system("cls||clear");
 }
 
 void Cadastrar_Produto(Produto** produtos, int *n_produtos)
@@ -279,21 +259,19 @@ void Cadastrar_Produto(Produto** produtos, int *n_produtos)
     
     printf("\t\tCADASTRO DE PRODUTOS\t\n\n");
     
-    //Verificar se eh a primeira execucao do programa
+    //Verificar se é a primeira execucao do programa para fazer malloc ou realloc
     if(*n_produtos == 0)
     {
-        printf("Digite a quantidade de produtos a ser cadastrada:\n\n>>");
+        printf("Digite a quantidade de produtos a ser cadastrada:\n\n>> ");
         scanf("%d", &*n_produtos);
 
         if(*n_produtos <= 0)
             printf("\nHouve um erro no registro!\n");
 
         //Cadastramento de produtos
-
         else
         {
             //Alocacao dinamica com malloc
-
             *produtos = (Produto*) malloc(*n_produtos * sizeof(Produto));
 
             for(int i = 0; i < *n_produtos; ++i)
@@ -301,13 +279,13 @@ void Cadastrar_Produto(Produto** produtos, int *n_produtos)
                 printf("Preencha os dados do Produto (%d):\nID: ", i+1);
                 scanf("%d", &(*produtos+i)->id);
 
-                fflush(stdin);
-
                 printf("Nome: ");
+                fflush(stdin);
                 fgets((*produtos+i)->nome, CHAR_MAX, stdin);
                 (*produtos+i)->nome[strcspn((*produtos+i)->nome, "\n")] = 0;
 
                 printf("Categoria: ");
+                fflush(stdin);
                 fgets((*produtos+i)->categoria, CHAR_MAX, stdin);
                 (*produtos+i)->categoria[strcspn((*produtos+i)->categoria, "\n")] = 0;
 
@@ -331,7 +309,6 @@ void Cadastrar_Produto(Produto** produtos, int *n_produtos)
             printf("\nHouve um erro no registro!\n");
 
         //Cadastramento de produtos 
-
         else
         {
             *n_produtos += _qnt;
@@ -343,15 +320,15 @@ void Cadastrar_Produto(Produto** produtos, int *n_produtos)
             {
             printf("Preencha os dados do Produto (%d):\nID: ", i+1);
             scanf("%d", &(*produtos+i)->id);
-            
-            fflush(stdin);
 
             printf("Nome: ");
+            fflush(stdin);
             fgets((*produtos+i)->nome, CHAR_MAX, stdin);
             (*produtos+i)->nome[strcspn((*produtos+i)->nome, "\n")] = 0;
 
 
             printf("Categoria: ");
+            fflush(stdin);
             fgets((*produtos+i)->categoria, CHAR_MAX, stdin);
             (*produtos+i)->categoria[strcspn((*produtos+i)->categoria, "\n")] = 0;
 
@@ -362,12 +339,12 @@ void Cadastrar_Produto(Produto** produtos, int *n_produtos)
             printf("Preco: ");
             scanf("%f", &(*produtos+i)->preco);
             }
-
         printf("Registrado com sucesso!\n");
         }
     }
-
     Loop_Tela();
+
+    system("cls||clear");
 }
 
 void Consultar(Cliente** clientes, Produto** produtos, Venda** vendas, int* n_clientes, int* n_produtos, int* n_vendas)
@@ -375,6 +352,7 @@ void Consultar(Cliente** clientes, Produto** produtos, Venda** vendas, int* n_cl
     /*===========================================================*/
     /*      CONSULTAR DADOS DE CLIENTES, PRODUTOS OU VENDAS      */
     /*===========================================================*/
+
     int _veroque;
     system("cls||clear");
 
@@ -463,143 +441,241 @@ void Consultar(Cliente** clientes, Produto** produtos, Venda** vendas, int* n_cl
             printf("\nTotal arrecadado: R$%.2f\n", _totalVendas);
         }
     }
-
     Loop_Tela();
 }
 
 void Atualizar_Cliente(Cliente** clientes, int *n_clientes)
 {
-    int _atualizaroque = 0, _buscaID, i = 0; 
-    
-    if(*n_clientes == 0)
-        printf("\nNão há clientes cadastrados!\n");
+    /*===========================================================*/
+    /*              ATUALIZAR DADOS DE CLIENTES                  */
+    /*===========================================================*/
 
-    else
+    int _atualizaroque = 0, _buscaID, i = 0, j = 0, resp; 
+
         do
         {
             system("cls||clear");
 
             printf("\t\tATUALIZAR CLIENTES\n");
 
-            printf("-Atualizar Nome(1)\n -Atualizar CPF(2)\n -Atualizar Endereço(3)\n -Atualizar Email(4)\n -Retornar(5)\n\n>> ");
-            scanf("%d", &_atualizaroque);
-
-            //Quebra o loop e volta para o início
-            if(_atualizaroque >=1 && _atualizaroque < 5)
+            if(*n_clientes == 0)
             {
-                printf("\nDigite o ID do Cliente: ");
-                scanf("%d", &_buscaID);
-            
-                //For para buscar o indice do produto no vetor
-                for(i = 0 ; i < *n_clientes; ++i)
-                {
-                    if((*clientes+i)->id == _buscaID)
-                        break;
-                }
-
-                /*OBSERVAÇÃO: o if seguinte está dando erros, ajustar posteriormente*/
-                //Se o i chegou no final do vetor, o usuario não existe
-                if(i >= *n_clientes - 1)
-                {
-                    printf("Usuário não está cadastrado!\nFaça seu cadastro no menu principal.\n");
-                    break;
-                }
-
-                switch (_atualizaroque)
-                {
-                    case 1:
-                        printf("Digite o novo nome do cliente (%d):\n>>", i+1);
-                        fgets((*clientes+i)->nome, CHAR_MAX, stdin);
-                        (*clientes+i)->nome[strcspn((*clientes+i)->nome, "\n")] = 0;
-                    break;
-
-                    case 2:
-                        printf("Digite o novo CPF do cliente (%d):\n>>", i+1);
-                        scanf("%d", &(*clientes+i)->cpf);   
-                    break;
-
-                    case 3:
-                        printf("Digite o novo endereço do cliente (%d):\n>>", i+1);
-                        fgets((*clientes+i)->endereco, CHAR_MAX, stdin);
-                        (*clientes+i)->endereco[strcspn((*clientes+i)->endereco, "\n")] = 0;
-                    break;
-
-                    case 4:
-                        printf("Digite o novo email do cliente (%d):\n>>", i+1);
-                        fgets((*clientes+i)->email, CHAR_MAX, stdin);
-                        (*clientes+i)->email[strcspn((*clientes+i)->email, "\n")] = 0;  
-                    break;
-                } 
+                printf("\nNão há clientes cadastrados!\n");
+                _atualizaroque = 6;
             }
-        }while(_atualizaroque != 5);
+                
+
+            else
+            {
+                printf("-Atualizar Nome(1)\n -Atualizar CPF(2)\n -Atualizar Endereço(3)\n -Atualizar Email(4)\n -Excluir Cliente(5)\n -Retornar(6)\n\n>> ");
+                scanf("%d", &_atualizaroque);
+
+                //Quebra o loop e volta para o início
+                if(_atualizaroque >=1 && _atualizaroque < 6)
+                {
+                    printf("\nDigite o ID do Cliente: ");
+                    scanf("%d", &_buscaID);
+                
+                    //For para buscar o indice do produto no vetor
+                    for(i = 0 ; i < *n_clientes; ++i)
+                    {
+                        if((*clientes+i)->id == _buscaID)
+                            break;
+                    }
+                    
+                    //Se chegou no final do vetor e o indice de i for maior que o numero de clientes
+                    if((i + 1) > *n_clientes)
+                    {
+                        printf("Usuário não está cadastrado!\nFaça seu cadastro no menu principal.\n");
+                        break;
+                    }
+
+                    switch (_atualizaroque)
+                    {
+                        case 1:
+                            printf("Digite o novo nome do cliente (%d):\n>> ", i+1);
+                            fflush(stdin);
+                            fgets((*clientes+i)->nome, CHAR_MAX, stdin);
+                            (*clientes+i)->nome[strcspn((*clientes+i)->nome, "\n")] = 0;
+                            printf("Atualização feita com sucesso!\n");
+                            Loop_Tela();
+                        break;
+
+                        case 2:
+                            printf("Digite o novo CPF do cliente (%d):\n>> ", i+1);
+                            scanf("%d", &(*clientes+i)->cpf);
+                            printf("Atualização feita com sucesso!\n");
+                            Loop_Tela();   
+                        break;
+
+                        case 3:
+                            printf("Digite o novo endereço do cliente (%d):\n>> ", i+1);
+                            fflush(stdin);
+                            fgets((*clientes+i)->endereco, CHAR_MAX, stdin);
+                            (*clientes+i)->endereco[strcspn((*clientes+i)->endereco, "\n")] = 0;
+                            printf("Atualização feita com sucesso!\n");
+                            Loop_Tela();
+                        break;
+
+                        case 4:
+                            printf("Digite o novo email do cliente (%d):\n>> ", i+1);
+                            fflush(stdin);
+                            fgets((*clientes+i)->email, CHAR_MAX, stdin);
+                            (*clientes+i)->email[strcspn((*clientes+i)->email, "\n")] = 0;  
+                            printf("Atualização feita com sucesso!\n");
+                            Loop_Tela();
+                        break;
+
+                        case 5:
+                            printf("Você realmente deseja excluir o cliente (%d) ?\n", i+1);
+                            printf(" -Sim(1)\n -Não(2)\n\n>> ");
+                            scanf("%d", &resp);
+
+                            if(resp == 1)
+                            {
+                                //Utilizando o último valor de i usado no laço de busca (cliente encontrado)
+                                for(i; i < *n_clientes - 1; i++)
+                                {
+                                    //Copiando os dados da posição posterior para o espaço deletado
+                                    j = i + 1;
+
+                                    (*clientes+i)->id = (*clientes+j)->id;
+                                    strcpy(((*clientes+i)->nome), ((*clientes+j)->nome));
+                                    (*clientes+i)->cpf = (*clientes+j)->cpf;
+                                    strcpy(((*clientes+i)->endereco), ((*clientes+j)->endereco));
+                                    strcpy(((*clientes+i)->email), ((*clientes+j)->email));
+
+                                }
+                                
+                                *n_clientes -= 1;
+
+                                //Fazendo a realocação dinâmica para liberar espaços vazios
+                                *clientes = (Cliente*) realloc(*clientes, *n_clientes * sizeof(Cliente));
+                                
+                                printf("Exclusão feita com sucesso!");
+                                Loop_Tela();
+                            }
+                        break;
+                    }     
+                }
+            }
+            
+        }while(_atualizaroque != 6);
 
     Loop_Tela();
 }
 
 void Atualizar_Produto(Produto** produtos, int *n_produtos)
 {
-    int _atualizaroque = 0, _buscaID, i = 0; 
+    /*===========================================================*/
+    /*              ATUALIZAR DADOS DE PRODUTOS                  */
+    /*===========================================================*/
+
+    int _atualizaroque = 0, _buscaID, i = 0, j = 0, resp; 
     
-    if(*n_produtos == 0)
-        printf("\nNão há produtos cadastrados!\n");
-    
-    else
         do
         {
             system("cls||clear");
 
             printf("\t\tATUALIZAR PRODUTOS\t\n");
- 
-            printf("-Atualizar Nome(1)\n -Categoria(2)\n -Quantidade(3)\n -Preço(4)\n -Retornar(5)\n\n>> ");
-            scanf("%d", &_atualizaroque);
 
-                //Quebra o loop e volta para o início
-            if(_atualizaroque >= 1 && _atualizaroque < 5)
+            if(*n_produtos == 0)
             {
-                printf("\nDigite o ID do produto: ");
-                scanf("%d", &_buscaID);
-        
-                //For para buscar o indice do produto no vetor
-                for(i = 0; i < *n_produtos; ++i)
+                printf("\nNão há produtos cadastrados!\n");
+                _atualizaroque = 6;
+            }
+                
+            else
+            {
+                printf("-Atualizar Nome(1)\n -Categoria(2)\n -Quantidade(3)\n -Preço(4)\n -Excluir Produto(5) -Retornar(6)\n\n>> ");
+                scanf("%d", &_atualizaroque);
+
+                if(_atualizaroque >= 1 && _atualizaroque < 6)
                 {
-                    if((*produtos+i)->id == _buscaID)
+                    printf("\nDigite o ID do produto: ");
+                    scanf("%d", &_buscaID);
+            
+                    //For para buscar o indice do produto no vetor
+                    for(i = 0; i < *n_produtos; ++i)
+                    {
+                        if((*produtos+i)->id == _buscaID)
+                            break;
+                    }
+
+                    //Se o i chegou no final do vetor, a mercadoria não existe
+                    if((i + 1) > *n_produtos)
+                    {
+                        printf("Mercadoria não está cadastrada!\nFaça seu cadastro no menu principal.\n");
                         break;
-                }
+                    }
 
-                /*OBSERVAÇÃO: o if seguinte está dando erros, ajustar posteriormente*/
-                //Se o i chegou no final do vetor, a mercadoria não existe
-                if(i >= *n_produtos - 1)
-                {
-                    printf("Mercadoria não cadastrada!\n Faça o cadastro no menu principal.\n");
-                    break;
-                }
+                    switch (_atualizaroque)
+                    {   
+                        case 1:
+                            printf("Digite o novo nome do produto (%d):\n>> ", i+1);
+                            fflush(stdin);
+                            fgets((*produtos+i)->nome, CHAR_MAX, stdin);
+                            (*produtos+i)->nome[strcspn((*produtos+i)->nome, "\n")] = 0;
 
-                switch (_atualizaroque)
-                {   
-                    case 1:
-                        printf("Digite o novo nome do produto (%d):\n>>", i+1);
-                        fgets((*produtos+i)->nome, CHAR_MAX, stdin);
-                        (*produtos+i)->nome[strcspn((*produtos+i)->nome, "\n")] = 0;
-                    break;
+                            Loop_Tela();
+                        break;
 
-                    case 2:
-                        printf("Digite a nova categoria do produto (%d):\n>>", i+1);
-                        fgets((*produtos+i)->categoria, CHAR_MAX, stdin);
-                        (*produtos+i)->categoria[strcspn((*produtos+i)->categoria, "\n")] = 0;   
-                    break;
+                        case 2:
+                            printf("Digite a nova categoria do produto (%d):\n>> ", i+1);
+                            fflush(stdin);
+                            fgets((*produtos+i)->categoria, CHAR_MAX, stdin);
+                            (*produtos+i)->categoria[strcspn((*produtos+i)->categoria, "\n")] = 0;   
 
-                    case 3:
-                        printf("Digite a nova quantidade do produto (%d):\n>>", i+1);
-                        scanf("%d", &(*produtos+i)->quantidade);
-                    break;
+                            Loop_Tela();
+                        break;
 
-                    case 4:
-                        printf("Digite o novo preço do produto (%d):\n>>", i+1);
-                        scanf("%f", &(*produtos+i)->preco);   
-                    break;
-                }
-            } 
-        }while(_atualizaroque != 5);
+                        case 3:
+                            printf("Digite a nova quantidade do produto (%d):\n>> ", i+1);
+                            scanf("%d", &(*produtos+i)->quantidade);
+
+                            Loop_Tela();
+                        break;
+
+                        case 4:
+                            printf("Digite o novo preço do produto (%d):\n>> ", i+1);
+                            scanf("%f", &(*produtos+i)->preco); 
+
+                            Loop_Tela();  
+                        break;
+
+                        case 5:
+                                printf("Você realmente deseja excluir o cliente (%d) ?\n", i+1);
+                                printf(" -Sim(1)\n -Não(2)\n\n>> ");
+                                scanf("%d", &resp);
+
+                                if(resp == 1)
+                                {
+                                    //Utilizando o último valor de i usado no laço de busca (produto encontrado)
+                                    for(i; i < *n_produtos - 1; i++)
+                                    {
+                                        //Copiando os dados da posição posterior para o espaço deletado
+                                        j = i + 1;
+
+                                        (*produtos+i)->id = (*produtos+j)->id;
+                                        strcpy(((*produtos+i)->nome), ((*produtos+j)->nome));
+                                        (*produtos+i)->quantidade = (*produtos+j)->quantidade;
+                                        (*produtos+i)->preco = (*produtos+j)->preco;
+                                    }
+
+                                    *n_produtos -= 1;
+
+                                    //Fazendo a realocação dinâmica para liberar os espaços vazios
+                                    *produtos = (Produto*) realloc(*produtos, *n_produtos * sizeof(Produto));
+                                    
+                                    printf("Exclusão feita com sucesso!");
+                                    Loop_Tela();
+                                }
+                        break;
+                    }
+                }   
+            }
+            
+        }while(_atualizaroque != 6);
 
     Loop_Tela();
 }
