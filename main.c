@@ -375,7 +375,6 @@ void Consultar(Cliente** clientes, Produto** produtos, Venda** vendas, int* n_cl
     /*===========================================================*/
     /*      CONSULTAR DADOS DE CLIENTES, PRODUTOS OU VENDAS      */
     /*===========================================================*/
-
     int _veroque;
     system("cls||clear");
 
@@ -392,13 +391,15 @@ void Consultar(Cliente** clientes, Produto** produtos, Venda** vendas, int* n_cl
         {
             printf("Nenhum registro encontrado.\n");
         }
+      
         // Senão exibir os registros do sistema
         else
         {
             for(int i = 0; i < *n_clientes; ++i)
             {
                 printf("\nRegistro Cliente nº(%d)\n", i+1);
-                printf("\tID:       %d\n", (*clientes+i)->id);
+
+                printf("\tID:   %d\n", (*clientes+i)->id);
                 printf("\tCPF:      %d\n", (*clientes+i)->cpf);
                 printf("\tNome:     %s\n", (*clientes+i)->nome);
                 printf("\tEndereço: %s\n", (*clientes+i)->endereco);
@@ -414,13 +415,15 @@ void Consultar(Cliente** clientes, Produto** produtos, Venda** vendas, int* n_cl
         {
             printf("Nenhum registro encontrado.\n");
         }
+
         // Senão exibir os registros do sistema
         else
         {
             for(int i = 0; i < *n_produtos; ++i)
             {
                 printf("\nRegistro Produto nº(%d)\n", i+1);
-                printf("\tID:         %d\n", (*produtos+i)->id);
+
+                printf("\tID:     %d\n", (*produtos+i)->id);
                 printf("\tNome:       %s\n", (*produtos+i)->nome);
                 printf("\tCategoria:  %s\n", (*produtos+i)->categoria);
                 printf("\tQuantidade: %d\n", (*produtos+i)->quantidade);
@@ -436,6 +439,7 @@ void Consultar(Cliente** clientes, Produto** produtos, Venda** vendas, int* n_cl
         {
             printf("Nenhum registro encontrado.\n");
         }
+
         // Senão exibir os registros do sistema
         else
         {
@@ -445,13 +449,14 @@ void Consultar(Cliente** clientes, Produto** produtos, Venda** vendas, int* n_cl
             for(int i = 0; i < *n_vendas; ++i)
             {
                 printf("\nRegistro Venda nº(%d)\n", i+1);
-                printf("\tID Cliente:     %d\n", (*vendas+i)->id_comprador);
+                printf("\tID Cliente: %d\n", (*vendas+i)->id_comprador);
                 printf("\tCategoria Jogo: %s\n", (*vendas+i)->categoria);
                 printf("\tNome Jogo:      %s\n", (*vendas+i)->nome);
                 printf("\tQuantidade:     %d\n", (*vendas+i)->quantidade);
                 printf("\tLucro:        R$%.2f\n", (*vendas+i)->lucro);
 
                 // Somar os valores de venda de cada registro
+
                 _totalVendas += (*vendas+i)->lucro;
             }
 
@@ -665,13 +670,16 @@ void Comprar(Cliente** clientes, Produto** produtos, Venda** vendas, int* n_clie
                     (*produtos+i)->quantidade -= _prodQntd;
 
                     /* Tratamento com struct de vendas */
+                  
                     // Contabilizar mais uma venda
                     *n_vendas += 1;
 
                     // Realizar o malloc caso a quantidade de vendas for a primeira
                     if(*n_vendas == 1)
                     {
+
                         // Fazer a alocação dinâmica inicial com o tamanho do buffer (5)
+
                         *vendas = (Venda*) malloc(VENDAS_BUFFER * sizeof(Venda));
                         *ctrl_vendasBuffer += 1;
                     }
