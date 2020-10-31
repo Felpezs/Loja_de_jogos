@@ -372,6 +372,9 @@ void Cadastrar_Produto(Produto** produtos, int *n_produtos)
 
 void Consultar(Cliente** clientes, Produto** produtos, Venda** vendas, int* n_clientes, int* n_produtos, int* n_vendas)
 {
+    /*===========================================================*/
+    /*      CONSULTAR DADOS DE CLIENTES, PRODUTOS OU VENDAS      */
+    /*===========================================================*/
     int _veroque;
     system("cls||clear");
 
@@ -388,13 +391,14 @@ void Consultar(Cliente** clientes, Produto** produtos, Venda** vendas, int* n_cl
         {
             printf("Nenhum registro encontrado.\n");
         }
-        
+      
         // Senão exibir os registros do sistema
         else
         {
             for(int i = 0; i < *n_clientes; ++i)
             {
                 printf("\nRegistro Cliente nº(%d)\n", i+1);
+
                 printf("\tID:   %d\n", (*clientes+i)->id);
                 printf("\tCPF:      %d\n", (*clientes+i)->cpf);
                 printf("\tNome:     %s\n", (*clientes+i)->nome);
@@ -418,6 +422,7 @@ void Consultar(Cliente** clientes, Produto** produtos, Venda** vendas, int* n_cl
             for(int i = 0; i < *n_produtos; ++i)
             {
                 printf("\nRegistro Produto nº(%d)\n", i+1);
+
                 printf("\tID:     %d\n", (*produtos+i)->id);
                 printf("\tNome:       %s\n", (*produtos+i)->nome);
                 printf("\tCategoria:  %s\n", (*produtos+i)->categoria);
@@ -449,6 +454,8 @@ void Consultar(Cliente** clientes, Produto** produtos, Venda** vendas, int* n_cl
                 printf("\tNome Jogo:      %s\n", (*vendas+i)->nome);
                 printf("\tQuantidade:     %d\n", (*vendas+i)->quantidade);
                 printf("\tLucro:        R$%.2f\n", (*vendas+i)->lucro);
+
+                // Somar os valores de venda de cada registro
 
                 _totalVendas += (*vendas+i)->lucro;
             }
@@ -599,6 +606,11 @@ void Atualizar_Produto(Produto** produtos, int *n_produtos)
 
 void Comprar(Cliente** clientes, Produto** produtos, Venda** vendas, int* n_clientes, int* n_produtos, int* n_vendas, int* ctrl_vendasBuffer)
 {
+    /*===============================================================================*/
+    /*                      ADQUIRIR PRODUTOS VALIDANDO:                             */
+    /*   ID DO CLIENTE, NOME DA CATEGORIA DO PRODUTO, NOME DO PRODUTO E QUANTIDADE   */
+    /*===============================================================================*/
+
     int _userID, _prodQntd;
     char _prodCat[CHAR_MAX] = "", _prodNome[CHAR_MAX];
     system("cls||clear");
@@ -624,23 +636,12 @@ void Comprar(Cliente** clientes, Produto** produtos, Venda** vendas, int* n_clie
 
             break;
         }
-        // else if(i >= (*n_clientes - 1))
-        // {
-        //     // Usuário não está cadastrado!
-        //     // Solicitar que faça seu cadastro no sistema
-        //     printf("Usuário não está cadastrado!\nFaça seu cadastro no menu principal.\n");
-
-        //     printf("\nPressione [Enter] para continuar.\n>> ");
-        //     while(getchar()!='\n');
-        //     getchar();
-        //     //FIM
-        // }
     }
     
     /* Não verificar o produto(loop abaixo) caso o usuário não esteja cadastrado
-     * Obs: a variável _prodID fará esse controle, portanto:
-     * Para _prodID == 0: o usuário não está cadastrado
-     * Para _prodId != 0: o usuário está cadastrado e solicitou um produto
+     * Obs: a variável _prodCat fará esse controle, portanto:
+     * Para _prodCat == '': o usuário não está cadastrado
+     * Para _prodCat != '': o usuário está cadastrado e solicitou um produto
      */
     if(strcmp(_prodCat, "") == 0)
     {
@@ -658,23 +659,27 @@ void Comprar(Cliente** clientes, Produto** produtos, Venda** vendas, int* n_clie
     //Loop enquanto o codigo procurado nao for igual ao codigo pedido ou nao ser encontrado
     do
     {
-        if(strcmp((*produtos+i)->categoria, _prodCat) == 0)            //se o codigo procurado for igual ao codigo pedido
+        if(strcmp((*produtos+i)->categoria, _prodCat) == 0)
         {
             if(strcmp((*produtos+i)->nome, _prodNome) == 0)
             {
-                if((*produtos+i)->quantidade >= _prodQntd)   //se a quantidade desejada estiver disponivel
+                if((*produtos+i)->quantidade >= _prodQntd)
                 {
-                    // A compra foi realizada com sucesso!
+                    /* O produto está disponível! */
                     printf("Produto disponivel. A quantidade desejada foi retirada do estoque\n");
-                    (*produtos+i)->quantidade -= _prodQntd;           //decrementa a qntd desejada
+                    (*produtos+i)->quantidade -= _prodQntd;
 
+                    /* Tratamento com struct de vendas */
+                  
                     // Contabilizar mais uma venda
                     *n_vendas += 1;
 
                     // Realizar o malloc caso a quantidade de vendas for a primeira
                     if(*n_vendas == 1)
                     {
-                        // Fazer a alocação dinâmica inicial com o tamanho do buffer
+
+                        // Fazer a alocação dinâmica inicial com o tamanho do buffer (5)
+
                         *vendas = (Venda*) malloc(VENDAS_BUFFER * sizeof(Venda));
                         *ctrl_vendasBuffer += 1;
                     }
@@ -700,7 +705,7 @@ void Comprar(Cliente** clientes, Produto** produtos, Venda** vendas, int* n_clie
                     printf("CATEGORIA PRODUTO: %s\n", (*vendas + (*n_vendas - 1))->categoria);
                     printf("NOME PRODUTO:      %s\n", (*vendas + (*n_vendas - 1))->nome);
                     printf("QUANTIDADE:        %d\n", (*vendas + (*n_vendas - 1))->quantidade);
-                    printf("LUCRO:             %.2f\n", (*vendas + (*n_vendas - 1))->lucro);
+                    printf("LUCRO:           R$%.2f\n", (*vendas + (*n_vendas - 1))->lucro);
 
                     break;
                 }
