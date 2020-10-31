@@ -39,6 +39,7 @@ void Consultar(Cliente**, Produto**, Venda**, int*, int*, int*);
 void Atualizar_Cliente(Cliente**, int*);
 void Atualizar_Produto(Produto**, int*);
 void Comprar(Cliente**, Produto**, Venda**, int*, int*, int*, int*);
+void Loop_Tela();
 
 int main()
 {
@@ -89,7 +90,8 @@ int main()
                 {
                     //Limpeza de Tela
                     system("cls||clear");
-
+                    
+                    //Submenu de Cadastro
                     printf("\t\tCADASTRO\n\n");
                     printf("Escolha uma opção para prosseguir:\n");
                     printf("- Clientes (1)\n");
@@ -127,6 +129,7 @@ int main()
                     //Limpeza de Tela
                     system("cls||clear");
 
+                    //Submenu de Atualização
                     printf("\t\tATUALIZAR\n\n");
                     printf("Escolha uma opção para prosseguir:\n");
                     printf("- Clientes (1)\n");
@@ -174,7 +177,7 @@ void Cadastrar_Cliente(Cliente **clientes, int *n_clientes)
 
     printf("\t\tCADASTRO DE CLIENTES\t\n\n");
 
-    //Verificar se eh a primeira execucao do programa
+    //Verificar se é a primeira execucao do programa
     if(*n_clientes == 0)
     {
         printf("Digite a quantidade de clientes a ser cadastrada:\n\n>>");
@@ -185,7 +188,7 @@ void Cadastrar_Cliente(Cliente **clientes, int *n_clientes)
 
         else
         {
-                //Alocacao dinamica com malloc
+            //Alocacao dinamica com malloc
             *clientes = (Cliente*) malloc(*n_clientes * sizeof(Cliente));
 
             //Cadastramento de produtos
@@ -197,14 +200,20 @@ void Cadastrar_Cliente(Cliente **clientes, int *n_clientes)
                 printf("Cpf: ");
                 scanf("%d", &(*clientes+i)->cpf);
                 
+                fflush(stdin);
+
                 printf("Nome: ");
-                scanf("%s", (*clientes+i)->nome);
+
+                fgets((*clientes+i)->nome, CHAR_MAX, stdin);
+                (*clientes+i)->nome[strcspn((*clientes+i)->nome, "\n")] = 0;
 
                 printf("Endereço: ");
-                scanf("%s", (*clientes+i)->endereco);
-                
+                fgets((*clientes+i)->endereco, CHAR_MAX, stdin);
+                (*clientes+i)->nome[strcspn((*clientes+i)->endereco, "\n")] = 0;
+
                 printf("Email: ");
-                scanf("%s", (*clientes+i)->email);
+                fgets((*clientes+i)->email, CHAR_MAX, stdin);
+                (*clientes+i)->nome[strcspn((*clientes+i)->email, "\n")] = 0;
             }
             printf("Registrado com sucesso!\n");
         }
@@ -232,28 +241,36 @@ void Cadastrar_Cliente(Cliente **clientes, int *n_clientes)
             {
                 printf("Preencha os dados do Cliente (%d):\nID: ", i+1);
                 scanf("%d", &(*clientes+i)->id);
-            
-                printf("CPF: ");
+                
+                printf("Cpf: ");
                 scanf("%d", &(*clientes+i)->cpf);
-            
+                
+                fflush(stdin);
+
                 printf("Nome: ");
-                scanf("%s", (*clientes+i)->nome);
+
+                /*Entrada dos dados do tipo string é feita pelo fgets
+                para evitar que as strings sejam distribuidas erroneamente por conta 
+                de espaços em branco, utilizou-se o strcspn, substituindo por "0"
+                quando é encontrado o "\n"*/
+
+                fgets((*clientes+i)->nome, CHAR_MAX, stdin);
+                (*clientes+i)->nome[strcspn((*clientes+i)->nome, "\n")] = 0;
 
                 printf("Endereço: ");
-                scanf("%s", (*clientes+i)->endereco);
-                
+                fgets((*clientes+i)->endereco, CHAR_MAX, stdin);
+                (*clientes+i)->nome[strcspn((*clientes+i)->endereco, "\n")] = 0;
+
                 printf("Email: ");
-                scanf("%s", (*clientes+i)->email);
+                fgets((*clientes+i)->email, CHAR_MAX, stdin);
+                (*clientes+i)->nome[strcspn((*clientes+i)->email, "\n")] = 0;
             }
             printf("Registrado com sucesso!\n");
         }
 
     }
 
-    //O usuário não saírá da tela enquanto não digitar a tecla enter
-    printf("\nPressione [Enter] para continuar.\n");
-    while(getchar()!='\n');
-    getchar();
+    Loop_Tela();
 }
 
 void Cadastrar_Produto(Produto** produtos, int *n_produtos)
@@ -284,11 +301,15 @@ void Cadastrar_Produto(Produto** produtos, int *n_produtos)
                 printf("Preencha os dados do Produto (%d):\nID: ", i+1);
                 scanf("%d", &(*produtos+i)->id);
 
+                fflush(stdin);
+
                 printf("Nome: ");
-                scanf("%s", (*produtos+i)->nome);
-            
+                fgets((*produtos+i)->nome, CHAR_MAX, stdin);
+                (*produtos+i)->nome[strcspn((*produtos+i)->nome, "\n")] = 0;
+
                 printf("Categoria: ");
-                scanf("%s", (*produtos+i)->categoria);
+                fgets((*produtos+i)->categoria, CHAR_MAX, stdin);
+                (*produtos+i)->categoria[strcspn((*produtos+i)->categoria, "\n")] = 0;
 
                 printf("Quantidade: ");
                 scanf("%d", &(*produtos+i)->quantidade);
@@ -323,11 +344,17 @@ void Cadastrar_Produto(Produto** produtos, int *n_produtos)
             printf("Preencha os dados do Produto (%d):\nID: ", i+1);
             scanf("%d", &(*produtos+i)->id);
             
+            fflush(stdin);
+
             printf("Nome: ");
-            scanf("%s", (*produtos+i)->nome);
+            fgets((*produtos+i)->nome, CHAR_MAX, stdin);
+            (*produtos+i)->nome[strcspn((*produtos+i)->nome, "\n")] = 0;
+
 
             printf("Categoria: ");
-            scanf("%s", (*produtos+i)->categoria);
+            fgets((*produtos+i)->categoria, CHAR_MAX, stdin);
+            (*produtos+i)->categoria[strcspn((*produtos+i)->categoria, "\n")] = 0;
+
 
             printf("Quantidade: ");
             scanf("%d", &(*produtos+i)->quantidade);
@@ -340,10 +367,7 @@ void Cadastrar_Produto(Produto** produtos, int *n_produtos)
         }
     }
 
-    //O usuário não saírá da tela enquanto não digitar a tecla enter
-    printf("\nPressione [Enter] para continuar.\n");
-    while(getchar()!='\n');
-    getchar();
+    Loop_Tela();
 }
 
 void Consultar(Cliente** clientes, Produto** produtos, Venda** vendas, int* n_clientes, int* n_produtos, int* n_vendas)
@@ -387,6 +411,7 @@ void Consultar(Cliente** clientes, Produto** produtos, Venda** vendas, int* n_cl
         {
             printf("Nenhum registro encontrado.\n");
         }
+
         // Senão exibir os registros do sistema
         else
         {
@@ -409,6 +434,7 @@ void Consultar(Cliente** clientes, Produto** produtos, Venda** vendas, int* n_cl
         {
             printf("Nenhum registro encontrado.\n");
         }
+
         // Senão exibir os registros do sistema
         else
         {
@@ -431,9 +457,7 @@ void Consultar(Cliente** clientes, Produto** produtos, Venda** vendas, int* n_cl
         }
     }
 
-    printf("\nPressione [Enter] para continuar.\n");
-    while(getchar()!='\n');
-    getchar();
+    Loop_Tela();
 }
 
 void Atualizar_Cliente(Cliente** clientes, int *n_clientes)
@@ -454,7 +478,7 @@ void Atualizar_Cliente(Cliente** clientes, int *n_clientes)
             scanf("%d", &_atualizaroque);
 
             //Quebra o loop e volta para o início
-            if(_atualizaroque >1 && _atualizaroque < 5)
+            if(_atualizaroque >=1 && _atualizaroque < 5)
             {
                 printf("\nDigite o ID do Cliente: ");
                 scanf("%d", &_buscaID);
@@ -465,8 +489,9 @@ void Atualizar_Cliente(Cliente** clientes, int *n_clientes)
                     if((*clientes+i)->id == _buscaID)
                         break;
                 }
-            
-                //Se o i chegou no final do vetor, a mercadoria não existe
+
+                /*OBSERVAÇÃO: o if seguinte está dando erros, ajustar posteriormente*/
+                //Se o i chegou no final do vetor, o usuario não existe
                 if(i >= *n_clientes - 1)
                 {
                     printf("Usuário não está cadastrado!\nFaça seu cadastro no menu principal.\n");
@@ -477,7 +502,8 @@ void Atualizar_Cliente(Cliente** clientes, int *n_clientes)
                 {
                     case 1:
                         printf("Digite o novo nome do cliente (%d):\n>>", i+1);
-                        scanf("%s", (*clientes+i)->nome);
+                        fgets((*clientes+i)->nome, CHAR_MAX, stdin);
+                        (*clientes+i)->nome[strcspn((*clientes+i)->nome, "\n")] = 0;
                     break;
 
                     case 2:
@@ -487,21 +513,20 @@ void Atualizar_Cliente(Cliente** clientes, int *n_clientes)
 
                     case 3:
                         printf("Digite o novo endereço do cliente (%d):\n>>", i+1);
-                        scanf("%s", (*clientes+i)->endereco);
+                        fgets((*clientes+i)->endereco, CHAR_MAX, stdin);
+                        (*clientes+i)->endereco[strcspn((*clientes+i)->endereco, "\n")] = 0;
                     break;
 
                     case 4:
                         printf("Digite o novo email do cliente (%d):\n>>", i+1);
-                        scanf("%s", (*clientes+i)->email);   
+                        fgets((*clientes+i)->email, CHAR_MAX, stdin);
+                        (*clientes+i)->email[strcspn((*clientes+i)->email, "\n")] = 0;  
                     break;
                 } 
             }
         }while(_atualizaroque != 5);
 
-  //O usuário não saírá da tela enquanto não digitar a tecla enter  
-  printf("\nPressione [Enter] para continuar.\n");
-  while(getchar()!='\n');
-  getchar();
+    Loop_Tela();
 }
 
 void Atualizar_Produto(Produto** produtos, int *n_produtos)
@@ -533,7 +558,8 @@ void Atualizar_Produto(Produto** produtos, int *n_produtos)
                     if((*produtos+i)->id == _buscaID)
                         break;
                 }
-        
+
+                /*OBSERVAÇÃO: o if seguinte está dando erros, ajustar posteriormente*/
                 //Se o i chegou no final do vetor, a mercadoria não existe
                 if(i >= *n_produtos - 1)
                 {
@@ -545,12 +571,14 @@ void Atualizar_Produto(Produto** produtos, int *n_produtos)
                 {   
                     case 1:
                         printf("Digite o novo nome do produto (%d):\n>>", i+1);
-                        scanf("%s", (*produtos+i)->nome);
+                        fgets((*produtos+i)->nome, CHAR_MAX, stdin);
+                        (*produtos+i)->nome[strcspn((*produtos+i)->nome, "\n")] = 0;
                     break;
 
                     case 2:
                         printf("Digite a nova categoria do produto (%d):\n>>", i+1);
-                        scanf("%s", (*produtos+i)->categoria);   
+                        fgets((*produtos+i)->categoria, CHAR_MAX, stdin);
+                        (*produtos+i)->categoria[strcspn((*produtos+i)->categoria, "\n")] = 0;   
                     break;
 
                     case 3:
@@ -566,10 +594,7 @@ void Atualizar_Produto(Produto** produtos, int *n_produtos)
             } 
         }while(_atualizaroque != 5);
 
-    //O usuário não saírá da tela enquanto não digitar a tecla enter
-    printf("\nPressione [Enter] para continuar.\n");
-    while(getchar()!='\n');
-    getchar();
+    Loop_Tela();
 }
 
 void Comprar(Cliente** clientes, Produto** produtos, Venda** vendas, int* n_clientes, int* n_produtos, int* n_vendas, int* ctrl_vendasBuffer)
@@ -623,9 +648,7 @@ void Comprar(Cliente** clientes, Produto** produtos, Venda** vendas, int* n_clie
         // Solicitar que faça seu cadastro no sistema
         printf("Usuário não está cadastrado!\nFaça seu cadastro no menu principal.\n");
 
-        printf("\nPressione [Enter] para continuar.\n>> ");
-        while(getchar()!='\n');
-        getchar();
+        Loop_Tela();
         // FIM
         return;
     }
@@ -703,6 +726,12 @@ void Comprar(Cliente** clientes, Produto** produtos, Venda** vendas, int* n_clie
     }
     while((i <= (*n_produtos)) || (strcmp((*produtos+i)->categoria, _prodCat) != 0));
 
+    Loop_Tela();
+}
+
+void Loop_Tela()
+{   
+    //Função que não sai do loop enquanto o usuário não digitar a tecla enter
     printf("\nPressione [Enter] para continuar.\n");
     while(getchar()!='\n');
     getchar();
