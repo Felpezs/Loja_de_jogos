@@ -700,9 +700,15 @@ void Comprar(Cliente** clientes, Produto** produtos, Venda** vendas, int* n_clie
             // Usuário está cadastrado! 
             // Pedir o ID do produto e a quantidade
             printf("Categoria do jogo:\n>> ");
-            scanf("%s", _prodCat);
+            fflush(stdin);
+            fgets(_prodCat, CHAR_MAX, stdin);
+            _prodCat[strcspn(_prodCat, "\n")] = 0; 
+
             printf("Nome do jogo:\n>> ");
-            scanf("%s", _prodNome);
+            fflush(stdin);
+            fgets(_prodNome, CHAR_MAX, stdin);
+            _prodNome[strcspn(_prodNome, "\n")] = 0;  
+             
             printf("Quantidade desejada:\n>> ");
             scanf("%d", &_prodQntd);
 
@@ -785,13 +791,13 @@ void Comprar(Cliente** clientes, Produto** produtos, Venda** vendas, int* n_clie
                     break; 
                 }
             }
-            else if (i >= (*n_produtos - 1))
+            else if ((i + 1) > *n_produtos)
             {
                 printf("NOME DO JOGO NÃO ENCONTRADO.\n");
                 break;
             }
         }
-        else if (i >= (*n_produtos - 1))
+        else if ((i + 1) > *n_produtos)
         {
             printf("CATEGORIA NÃO ENCONTRADA.\n");
             break;
