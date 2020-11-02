@@ -38,8 +38,6 @@ void Cadastrar_Produto(Produto**, int*);
 void Consultar(Cliente**, Produto**, Venda**, int*, int*, int*);
 void Atualizar_Cliente(Cliente**, int*);
 void Atualizar_Produto(Produto**, int*);
-void Excluir_Cliente();
-void Excluir_Produto();
 void Comprar(Cliente**, Produto**, Venda**, int*, int*, int*, int*);
 void Loop_Tela();
 
