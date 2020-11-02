@@ -369,7 +369,7 @@ void Consultar(Cliente** clientes, Produto** produtos, Venda** vendas, int* n_cl
         {
             printf("Nenhum registro encontrado.\n");
         }
-        // Senão exibir os registros do sistema
+        // Senão, exibir os registros do sistema
         else
         {
             for(int i = 0; i < *n_clientes; ++i)
@@ -583,7 +583,7 @@ void Atualizar_Produto(Produto** produtos, int *n_produtos)
                 
             else
             {
-                printf("-Atualizar Nome(1)\n -Categoria(2)\n -Quantidade(3)\n -Preço(4)\n -Excluir Produto(5) -Retornar(6)\n\n>> ");
+                printf("-Atualizar Nome(1)\n -Categoria(2)\n -Quantidade(3)\n -Preço(4)\n -Excluir Produto(5)\n -Retornar(6)\n\n>> ");
                 scanf("%d", &_atualizaroque);
 
                 if(_atualizaroque >= 1 && _atualizaroque < 6)
@@ -640,7 +640,7 @@ void Atualizar_Produto(Produto** produtos, int *n_produtos)
                         break;
 
                         case 5:
-                                printf("Você realmente deseja excluir o cliente (%d) ?\n", i+1);
+                                printf("Você realmente deseja excluir o produto (%d) ?\n", i+1);
                                 printf(" -Sim(1)\n -Não(2)\n\n>> ");
                                 scanf("%d", &resp);
 
@@ -654,12 +654,13 @@ void Atualizar_Produto(Produto** produtos, int *n_produtos)
 
                                         (*produtos+i)->id = (*produtos+j)->id;
                                         strcpy(((*produtos+i)->nome), ((*produtos+j)->nome));
+                                        strcpy(((*produtos+i)->categoria), ((*produtos+j)->categoria));
                                         (*produtos+i)->quantidade = (*produtos+j)->quantidade;
                                         (*produtos+i)->preco = (*produtos+j)->preco;
                                     }
-
+                                    
                                     *n_produtos -= 1;
-
+                                    
                                     //Fazendo a realocação dinâmica para liberar os espaços vazios
                                     *produtos = (Produto*) realloc(*produtos, *n_produtos * sizeof(Produto));
                                     
