@@ -612,6 +612,7 @@ void Atualizar_Produto(Produto** produtos, int *n_produtos)
                             fflush(stdin);
                             fgets((*produtos+i)->nome, CHAR_MAX, stdin);
                             (*produtos+i)->nome[strcspn((*produtos+i)->nome, "\n")] = 0;
+                            printf("Atualização feita com sucesso!\n");
 
                             Loop_Tela();
                         break;
@@ -620,7 +621,8 @@ void Atualizar_Produto(Produto** produtos, int *n_produtos)
                             printf("Digite a nova categoria do produto (%d):\n>> ", i+1);
                             fflush(stdin);
                             fgets((*produtos+i)->categoria, CHAR_MAX, stdin);
-                            (*produtos+i)->categoria[strcspn((*produtos+i)->categoria, "\n")] = 0;   
+                            (*produtos+i)->categoria[strcspn((*produtos+i)->categoria, "\n")] = 0;
+                            printf("Atualização feita com sucesso!\n");   
 
                             Loop_Tela();
                         break;
@@ -628,13 +630,15 @@ void Atualizar_Produto(Produto** produtos, int *n_produtos)
                         case 3:
                             printf("Digite a nova quantidade do produto (%d):\n>> ", i+1);
                             scanf("%d", &(*produtos+i)->quantidade);
+                            printf("Atualização feita com sucesso!\n");
 
                             Loop_Tela();
                         break;
 
                         case 4:
                             printf("Digite o novo preço do produto (%d):\n>> ", i+1);
-                            scanf("%f", &(*produtos+i)->preco); 
+                            scanf("%f", &(*produtos+i)->preco);
+                            printf("Atualização feita com sucesso!\n"); 
 
                             Loop_Tela();  
                         break;
