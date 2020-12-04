@@ -4,101 +4,49 @@
 #include "operacoes.h"
 #include "produtos.h"
 
-void Cadastrar_Produto(Produto** produtos, int *n_produtos)
+//No fim da funcao, abrir arquivo, upar dados, fechar arquivo
+void Cadastrar_Produto(Produto* produtos, int *n_produtos)
 {
+	int i = *n_produtos;
     system("cls||clear");
 
     printf("\t\tCADASTRO DE PRODUTOS\t\n\n");
 
-    //Verificar se eh a primeira execucao do programa para fazer malloc ou realloc
-    if(*n_produtos == 0)
-    {
-        printf("Digite a quantidade de produtos a ser cadastrada:\n\n>> ");
-        scanf("%d", &*n_produtos);
+    /* Coleta dos dados do produto
+     * - ID         (int)
+     * - NOME       (char[])
+     * - CATEGORIA  (char[])
+     * - QUANTIDADE (int)
+     * - PRECO      (float)
+     */
 
-        if(*n_produtos <= 0)
-            printf("\nHouve um erro no registro!\n");
+    /* ID (int) */
+    printf("Preencha os dados do Produto (%d):\nID: ", *n_produtos);
+    scanf("%d", &(produtos + 1)->id);
 
-        //Cadastramento de produtos
-        else
-        {
-            //Alocacao dinamica com malloc
-            *produtos = (Produto*) malloc(*n_produtos * sizeof(Produto));
+    /* NOME (char[]) */
+    printf("Nome: ");
+    fflush(stdin);
+    fgets((produtos + i)->nome, CHAR_M, stdin);
+    (produtos + i)->nome[strcspn((produtos + i)->nome, "\n")] = 0;
 
-            for(int i = 0; i < *n_produtos; ++i)
-            {
-                printf("Preencha os dados do Produto (%d):\nID: ", i+1);
-                scanf("%d", &(*produtos+i)->id);
+    /* CATEGORIA (char[]) */
+    printf("Categoria: ");
+    fflush(stdin);
+    fgets((produtos + i)->categoria, CHAR_M, stdin);
+    (produtos + i)->categoria[strcspn((produtos + i)->categoria, "\n")] = 0;
 
-                printf("Nome: ");
-                fflush(stdin);
-                fgets((*produtos+i)->nome, CHAR_MAX, stdin);
-                (*produtos+i)->nome[strcspn((*produtos+i)->nome, "\n")] = 0;
+    /* QUANTIDADE (int) */
+    printf("Quantidade: ");
+    scanf("%d", &(produtos + i)->quantidade);
 
-                printf("Categoria: ");
-                fflush(stdin);
-                fgets((*produtos+i)->categoria, CHAR_MAX, stdin);
-                (*produtos+i)->categoria[strcspn((*produtos+i)->categoria, "\n")] = 0;
-
-                printf("Quantidade: ");
-                scanf("%d", &(*produtos+i)->quantidade);
-
-                printf("Preco: ");
-                scanf("%f", &(*produtos+i)->preco);
-            }
-        printf("Registrado com sucesso!\n");
-        }
-    }
-
-    else
-    {
-        int _qnt;
-        printf("Digite a quantidade de produtos a ser cadastrada: ");
-        scanf("%d", &_qnt);
-
-        if(_qnt <= 0)
-            printf("\nHouve um erro no registro!\n");
-
-        //Cadastramento de produtos
-        else
-        {
-            *n_produtos += _qnt;
-
-            //Realocacao dinamica com realloc
-            *produtos = (Produto*) realloc(*produtos, *n_produtos * sizeof(Produto));
-
-            for(int i = (*n_produtos - _qnt); i < *n_produtos; ++i)
-            {
-            printf("Preencha os dados do Produto (%d):\nID: ", i+1);
-            scanf("%d", &(*produtos+i)->id);
-
-            printf("Nome: ");
-            fflush(stdin);
-            fgets((*produtos+i)->nome, CHAR_MAX, stdin);
-            (*produtos+i)->nome[strcspn((*produtos+i)->nome, "\n")] = 0;
-
-
-            printf("Categoria: ");
-            fflush(stdin);
-            fgets((*produtos+i)->categoria, CHAR_MAX, stdin);
-            (*produtos+i)->categoria[strcspn((*produtos+i)->categoria, "\n")] = 0;
-
-
-            printf("Quantidade: ");
-            scanf("%d", &(*produtos+i)->quantidade);
-
-            printf("Preco: ");
-            scanf("%f", &(*produtos+i)->preco);
-            }
-        printf("Registrado com sucesso!\n");
-        }
-    }
-    Loop_Tela();
-
-    system("cls||clear");
+    /* PRECO (float) */
+    printf("Preco: ");
+    scanf("%f", &(produtos + i)->preco);
 }
 
-void Atualizar_Produto(Produto** produtos, int *n_produtos)
+//No fim do programa, abre arquivo, envia dados, fecha arquivo
+void Atualizar_Produto(Produto* produtos, int *n_produtos)
 {
     /*===========================================================*/
     /*              ATUALIZAR DADOS DE PRODUTOS                  */
@@ -114,13 +62,13 @@ void Atualizar_Produto(Produto** produtos, int *n_produtos)
 
             if(*n_produtos == 0)
             {
-                printf("\nNão há produtos cadastrados!\n");
+                printf("\nNao ha produtos cadastrados!\n");
                 _atualizaroque = 6;
             }
 
             else
             {
-                printf("-Atualizar Nome(1)\n -Categoria(2)\n -Quantidade(3)\n -Preço(4)\n -Excluir Produto(5)\n -Retornar(6)\n\n>> ");
+                printf("-Atualizar Nome(1)\n -Categoria(2)\n -Quantidade(3)\n -Preco(4)\n -Excluir Produto(5)\n -Retornar(6)\n\n>> ");
                 scanf("%d", &_atualizaroque);
 
                 if(_atualizaroque >= 1 && _atualizaroque < 6)
@@ -131,14 +79,14 @@ void Atualizar_Produto(Produto** produtos, int *n_produtos)
                     //For para buscar o indice do produto no vetor
                     for(i = 0; i < *n_produtos; ++i)
                     {
-                        if((*produtos+i)->id == _buscaID)
+                        if((produtos+i)->id == _buscaID)
                             break;
                     }
 
-                    //Se o i chegou no final do vetor, a mercadoria não existe
+                    //Se o i chegou no final do vetor, a mercadoria n?o existe
                     if((i + 1) > *n_produtos)
                     {
-                        printf("Mercadoria não está cadastrada!\nFaça seu cadastro no menu principal.\n");
+                        printf("Mercadoria nao esta cadastrada!\nFaca seu cadastro no menu principal.\n");
                         break;
                     }
 
@@ -147,9 +95,9 @@ void Atualizar_Produto(Produto** produtos, int *n_produtos)
                         case 1:
                             printf("Digite o novo nome do produto (%d):\n>> ", i+1);
                             fflush(stdin);
-                            fgets((*produtos+i)->nome, CHAR_MAX, stdin);
-                            (*produtos+i)->nome[strcspn((*produtos+i)->nome, "\n")] = 0;
-                            printf("Atualização feita com sucesso!\n");
+                            fgets((produtos+i)->nome, CHAR_M, stdin);
+                            (produtos+i)->nome[strcspn((produtos+i)->nome, "\n")] = 0;
+                            printf("Atualiza??o feita com sucesso!\n");
 
                             Loop_Tela();
                         break;
@@ -157,55 +105,52 @@ void Atualizar_Produto(Produto** produtos, int *n_produtos)
                         case 2:
                             printf("Digite a nova categoria do produto (%d):\n>> ", i+1);
                             fflush(stdin);
-                            fgets((*produtos+i)->categoria, CHAR_MAX, stdin);
-                            (*produtos+i)->categoria[strcspn((*produtos+i)->categoria, "\n")] = 0;
-                            printf("Atualização feita com sucesso!\n");
+                            fgets((produtos+i)->categoria, CHAR_M, stdin);
+                            (produtos+i)->categoria[strcspn((produtos+i)->categoria, "\n")] = 0;
+                            printf("Atualiza??o feita com sucesso!\n");
 
                             Loop_Tela();
                         break;
 
                         case 3:
                             printf("Digite a nova quantidade do produto (%d):\n>> ", i+1);
-                            scanf("%d", &(*produtos+i)->quantidade);
-                            printf("Atualização feita com sucesso!\n");
+                            scanf("%d", &(produtos+i)->quantidade);
+                            printf("Atualiza??o feita com sucesso!\n");
 
                             Loop_Tela();
                         break;
 
                         case 4:
-                            printf("Digite o novo preço do produto (%d):\n>> ", i+1);
-                            scanf("%f", &(*produtos+i)->preco);
-                            printf("Atualização feita com sucesso!\n");
+                            printf("Digite o novo pre?o do produto (%d):\n>> ", i+1);
+                            scanf("%f", &(produtos+i)->preco);
+                            printf("Atualiza??o feita com sucesso!\n");
 
                             Loop_Tela();
                         break;
 
                         case 5:
-                                printf("Você realmente deseja excluir o produto (%d) ?\n", i+1);
-                                printf(" -Sim(1)\n -Não(2)\n\n>> ");
+                                printf("Voce realmente deseja excluir o produto (%d) ?\n", i+1);
+                                printf(" -Sim(1)\n -Nao(2)\n\n>> ");
                                 scanf("%d", &resp);
 
                                 if(resp == 1)
                                 {
-                                    //Utilizando o último valor de i usado no laço de busca (produto encontrado)
+                                    //Utilizando o ?ltimo valor de i usado no la?o de busca (produto encontrado)
                                     for(i=i; i < *n_produtos - 1; i++)
                                     {
-                                        //Copiando os dados da posição posterior para o espaço deletado
+                                        //Copiando os dados da posi??o posterior para o espa?o deletado
                                         j = i + 1;
 
-                                        (*produtos+i)->id = (*produtos+j)->id;
-                                        strcpy(((*produtos+i)->nome), ((*produtos+j)->nome));
-                                        strcpy(((*produtos+i)->categoria), ((*produtos+j)->categoria));
-                                        (*produtos+i)->quantidade = (*produtos+j)->quantidade;
-                                        (*produtos+i)->preco = (*produtos+j)->preco;
+                                        (produtos+i)->id = (produtos+j)->id;
+                                        strcpy(((produtos+i)->nome), ((produtos+j)->nome));
+                                        strcpy(((produtos+i)->categoria), ((produtos+j)->categoria));
+                                        (produtos+i)->quantidade = (produtos+j)->quantidade;
+                                        (produtos+i)->preco = (produtos+j)->preco;
                                     }
 
                                     *n_produtos -= 1;
 
-                                    //Fazendo a realocação dinâmica para liberar os espaços vazios
-                                    *produtos = (Produto*) realloc(*produtos, *n_produtos * sizeof(Produto));
-
-                                    printf("Exclusão feita com sucesso!");
+                                    printf("Exclusao feita com sucesso!");
                                     Loop_Tela();
                                 }
                         break;
@@ -218,31 +163,35 @@ void Atualizar_Produto(Produto** produtos, int *n_produtos)
     Loop_Tela();
 }
 
-void Consultar_Produto(Produto** produtos, int* n_produtos)
-{
+void Consultar_Produto(Produto* produtos, int n_produtos)
+{ 
+	int i;
+	
     system("cls||clear");
 
     printf("\t\tCONSULTAR DADOS DE PRODUTOS\n\n");
 
-    // Exibir que não existem registros
-    if(*n_produtos == 0)
+    // Exibir que n?o existem registros
+    if(n_produtos == 0)
     {
         printf("Nenhum registro encontrado.\n");
     }
-    // Senão exibir os registros do sistema
+    // Sen?o exibir os registros do sistema
     else
     {
-        for(int i = 0; i < *n_produtos; ++i)
+        for(i = 0; i < n_produtos; ++i)
         {
-            printf("\nRegistro Produto nº(%d)\n", i+1);
+            printf("\nRegistro Produto <%d>\n", i+1);
 
-            printf("\tID:         %d\n", (*produtos+i)->id);
-            printf("\tNome:       %s\n", (*produtos+i)->nome);
-            printf("\tCategoria:  %s\n", (*produtos+i)->categoria);
-            printf("\tQuantidade: %d\n", (*produtos+i)->quantidade);
-            printf("\tPreco:    R$%.2f\n", (*produtos+i)->preco);
+            printf("\tID:         %d\n", (produtos+i)->id);
+            printf("\tNome:       %s\n", (produtos+i)->nome);
+            printf("\tCategoria:  %s\n", (produtos+i)->categoria);
+            printf("\tQuantidade: %d\n", (produtos+i)->quantidade);
+            printf("\tPreco:    R$%.2f\n", (produtos+i)->preco);
         }
     }
 
     Loop_Tela();
 }
+
+

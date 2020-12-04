@@ -2,7 +2,7 @@
 #define STRUCTS_H_INCLUDED
 
 #define CHAR_M 100
-#define VENDAS_BUFFER 5
+#define CTRL_BUFFER 3
 
 typedef struct Cliente
 {
