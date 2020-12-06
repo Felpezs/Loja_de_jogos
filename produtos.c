@@ -22,7 +22,7 @@ void Cadastrar_Produto(Produto* produtos, int *n_produtos)
 
     /* ID (int) */
     printf("Preencha os dados do Produto (%d):\nID: ", *n_produtos);
-    scanf("%d", &(produtos + 1)->id);
+    scanf("%d", &(produtos + i)->id);
 
     /* NOME (char[]) */
     printf("Nome: ");
@@ -43,6 +43,21 @@ void Cadastrar_Produto(Produto* produtos, int *n_produtos)
     /* PRECO (float) */
     printf("Preco: ");
     scanf("%f", &(produtos + i)->preco);
+
+    *n_produtos += 1;
+}
+
+//Funcao para gravar os dados dos produtos no disco por escrita binaria e depois fechar o arq
+void Gravar_Produto(FILE* arq, Produto *produtos, int n_produtos, int ctrl_produtosBuffer)
+{
+    arq = fopen("produtos.dat", "wb");
+    if (arq != NULL)
+    {
+        fwrite(&n_produtos, sizeof(int), 1, arq);
+        fwrite(&ctrl_produtosBuffer, sizeof(int), 1, arq);
+        fwrite(produtos, sizeof(Produto), n_produtos, arq);
+        fclose(arq);
+    }
 }
 
 //No fim do programa, abre arquivo, envia dados, fecha arquivo
@@ -193,5 +208,3 @@ void Consultar_Produto(Produto* produtos, int n_produtos)
 
     Loop_Tela();
 }
-
-

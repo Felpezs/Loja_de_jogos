@@ -3,40 +3,33 @@
 #include <string.h>
 #include "operacoes.h"
 
+//Funcao para consultar dados de vendas da memoria
 void Consultar_Vendas(Venda* vendas, int n_vendas)
 {
-	int i;
-	
-    /*===========================================================*/
-    /*              CONSULTAR DADOS DE VENDAS                    */
-    /*===========================================================*/
+    int i;
 
     system("cls||clear");
-
-    // Submenu para ver clientes ou produtos
     printf("\tCONSULTAR DADOS CADASTRAIS DAS VENDAS\n\n");
 
-    // Exibir que nao existem registros
-    if(n_vendas == 0)
+    if(n_vendas == 0)   /* sem registros na memoria para exibir */
     {
         printf("Nenhum registro encontrado.\n");
     }
-    // Senao exibir os registros do sistema
-    else
+    else    /* exibir os dados armazenados na memoria de cada registro */
     {
-        // Valor total arrecadado das vendas
+        //valor total arrecadado das vendas
         float _totalVendas = 0;
 
         for(i = 0; i < n_vendas; ++i)
         {
-            printf("\nRegistro Venda <%d>\n", i+1);
-            printf("\tID Cliente:     %d\n", (vendas+i)->id_comprador);
-            printf("\tCategoria Jogo: %s\n", (vendas+i)->categoria);
-            printf("\tNome Jogo:      %s\n", (vendas+i)->nome);
-            printf("\tQuantidade:     %d\n", (vendas+i)->quantidade);
-            printf("\tLucro:        R$%.2f\n", (vendas+i)->lucro);
+            printf("\nRegistro Venda <%d>\n",   i+1);
+            printf("\tID Cliente:     %d\n",    (vendas+i)->id_comprador);
+            printf("\tCategoria Jogo: %s\n",    (vendas+i)->categoria);
+            printf("\tNome Jogo:      %s\n",    (vendas+i)->nome);
+            printf("\tQuantidade:     %d\n",    (vendas+i)->quantidade);
+            printf("\tLucro:        R$%.2f\n",  (vendas+i)->lucro);
 
-            // Soma os valores de venda de cada registro
+            //soma os valores da venda de cada registro
             _totalVendas += (vendas+i)->lucro;
         }
 
@@ -45,7 +38,21 @@ void Consultar_Vendas(Venda* vendas, int n_vendas)
     Loop_Tela();
 }
 
-//A cada 3 execucoes, abrir arquivo, envia dados, fecha arquivo, liberar memória dos dados enviados
+//Funcao para gravar os dados das vendas no disco por escrita binaria e depois fechar o arq
+void Gravar_Venda(FILE *arq, Venda *vendas, int n_vendas, int ctrl_vendasBuffer)
+{
+    //abrir o arquivo de vendas para gravacao binaria
+    arq = fopen("vendas.dat", "wb");
+    if (arq != NULL)
+    {
+        fwrite(&n_vendas, sizeof(int), 1, arq);             /* grava o numero total de registros da memoria */
+        fwrite(&ctrl_vendasBuffer, sizeof(int), 1, arq);    /* grava a quantidade do controle do buffer */
+        fwrite(vendas, sizeof(Venda), n_vendas, arq);       /* grava os dados das vendas da memoria para o disco */
+        fclose(arq);
+    }
+}
+
+//Funcao de pedidos de compra, valida o usuario e produtos cadastrados (tudo em memoria)
 void Comprar(Cliente* clientes, Produto* produtos, Venda** vendas, int n_clientes, int n_produtos, int* n_vendas, int* ctrl_vendasBuffer)
 {
     /*===============================================================================*/
@@ -56,14 +63,13 @@ void Comprar(Cliente* clientes, Produto* produtos, Venda** vendas, int n_cliente
     int _userID, _prodQntd, i;
     char _prodCat[100] = "", _prodNome[100];
     
+    //submenu
     system("cls||clear");
-
-    // Submenu para comprar um produto
     printf("\tCOMPRAR PRODUTO\n\n");
     printf("Codigo do cliente:\n\n>> ");
     scanf("%d", &_userID);
 
-    // Verifica-se o Codigo fornecido (ID) do CLIENTE esta cadastrado
+    //verifica se o codigo fornecido (ID) do CLIENTE esta cadastrado
     for(i = 0; i < n_clientes; ++i)
     {
         if((clientes+i)->id == _userID)
@@ -119,7 +125,7 @@ void Comprar(Cliente* clientes, Produto* produtos, Venda** vendas, int n_cliente
 	                {
 	                    /* O produto esta disponivel! */
 	                    printf("Produto disponivel. A quantidade desejada foi retirada do estoque\n");
-	                    (produtos+i)->quantidade -= _prodQntd;
+	                    (produtos+i)->quantidade -= _prodQntd;  /* remover a quantidade solicitada do estoque (em memoria) */
 	
                         /*---------------------------------*/
 	                    /* Tratamento com struct de vendas */
@@ -133,12 +139,11 @@ void Comprar(Cliente* clientes, Produto* produtos, Venda** vendas, int n_cliente
 	                    {
 	                        //incrementa mais uma quantidade de vezes do buffer de vendas
 	                        *ctrl_vendasBuffer += 1;
-	
 	                        //faz a realocacao dinamica de mais posições
 	                        *vendas = (Venda*) realloc(*vendas, (CTRL_BUFFER * (*ctrl_vendasBuffer)) * sizeof(Venda));
 	                    }
 	
-	                    /* Registrar os dados na estrutura de vendas
+	                    /* Registrar os dados na estrutura de vendas (MEMORIA)
                          * - ID DO COMPRADOR        (int)
                          * - CATEGORIA DO PRODUTO   (char[])
                          * - NOME DO PRODUTO        (char[])

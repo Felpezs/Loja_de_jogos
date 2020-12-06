@@ -73,12 +73,14 @@ int main()
 
         if(arq_vendas != NULL)
         {
-            fread(&qntd_vendas, sizeof(int), 1, arq_vendas);
-            fread(vendas, sizeof(Venda), qntd_vendas, arq_vendas);
+            fread(&qntd_vendas, sizeof(int), 1, arq_vendas);                            /* ler o numero total de registros */
+            fread(&ctrl_vendasBuffer, sizeof(int), 1, arq_vendas);                      /* ler a quantidade de vezes que o buffer ocupa */
+            vendas = (Venda*) malloc(ctrl_vendasBuffer * CTRL_BUFFER * sizeof(Venda));  /* alocar espaco na memoria para receber os dados do disco */
+            fread(vendas, sizeof(Venda), qntd_vendas, arq_vendas);                      /* transferir os dados do disco para a memoria dinamica */
         }
 
         else
-        	vendas = (Venda*) malloc(CTRL_BUFFER * sizeof(Venda));
+        	vendas = (Venda*) malloc(CTRL_BUFFER * sizeof(Venda));                      /* senao, aloca espaco inicial na memoria do buffer */
             
 		fclose(arq_vendas);
 		
@@ -137,7 +139,7 @@ int main()
                                     
                                     if(clientes == NULL)
                                     {
-                                    	printf("\nERRO NA MEMÓRIA");
+                                    	printf("\nERRO NA MEMï¿½RIA");
                                     	return 55;
 									}
                                 }
@@ -167,14 +169,14 @@ int main()
                                 	fwrite(&ctrl_produtosBuffer, sizeof(int), 1, arq_produtos);
                                 	fwrite(produtos, sizeof(Produto), qntd_produtos, arq_produtos);
                                 
-                                	fclose(arq_clientes);
+                                	fclose(arq_produtos);
       
                                     ctrl_produtosBuffer += 1;
                                     produtos = (Produto*) realloc(produtos, (ctrl_produtosBuffer * CTRL_BUFFER * sizeof(Produto)));
                                     
                                     if(produtos == NULL)
                                     {
-                                    	printf("\nERRO NA MEMÓRIA");
+                                    	printf("\nERRO NA MEMï¿½RIA");
                                     	return 55;
 									}
                                 }
@@ -255,13 +257,26 @@ int main()
             	break;
 
             case 4:
-
                 //Frequencia de uso: 3
                 Comprar(clientes, produtos, &vendas, qntd_clientes, qntd_produtos, &qntd_vendas, &ctrl_vendasBuffer);
+
+                //gravar da memoria para o disco a cada 3 registros de vendas
+                if((qntd_vendas % 3) == 0)
+                {
+                    Gravar_Venda(arq_vendas, vendas, qntd_vendas, ctrl_vendasBuffer);
+                    Gravar_Produto(arq_produtos, produtos, qntd_produtos, ctrl_produtosBuffer); /* gravar estoque atualizado */
+                }
             	break;
         }
         system("cls||clear");
     }while(resp != 5);
+
+    //gravar os ultimos registros remascentes de vendas
+    if((qntd_vendas % 3) != 0)
+    {
+        Gravar_Venda(arq_vendas, vendas, qntd_vendas, ctrl_vendasBuffer);
+        Gravar_Produto(arq_produtos, produtos, qntd_produtos, ctrl_produtosBuffer); /* gravar estoque atualizado */
+    }
     
 	free(clientes);
     free(produtos);
@@ -269,5 +284,3 @@ int main()
     
     return 0;
 }
-
-
