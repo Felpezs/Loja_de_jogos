@@ -7,7 +7,7 @@
 #include "structs.h"
 
 void Consultar_Vendas(Venda*, int);
-void Gravar_Venda(FILE*, Venda*, int, int);
+void Gravar_Venda(Venda*, int, int);
 void Comprar(Cliente*, Produto*, Venda**, int, int, int*, int*);
 void Loop_Tela();
 

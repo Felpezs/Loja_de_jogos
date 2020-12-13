@@ -3,6 +3,8 @@
 #include <string.h>
 #include "operacoes.h"
 #include "produtos.h"
+#include <locale.h>
+
 
 //No fim da funcao, abrir arquivo, upar dados, fechar arquivo
 void Cadastrar_Produto(Produto* produtos, int *n_produtos)
@@ -21,7 +23,7 @@ void Cadastrar_Produto(Produto* produtos, int *n_produtos)
      */
 
     /* ID (int) */
-    printf("Preencha os dados do Produto (%d):\nID: ", *n_produtos);
+    printf("Preencha os dados do Produto (%d):\nID: ", *n_produtos + 1);
     scanf("%d", &(produtos + i)->id);
 
     /* NOME (char[]) */
@@ -48,8 +50,9 @@ void Cadastrar_Produto(Produto* produtos, int *n_produtos)
 }
 
 //Funcao para gravar os dados dos produtos no disco por escrita binaria e depois fechar o arq
-void Gravar_Produto(FILE* arq, Produto *produtos, int n_produtos, int ctrl_produtosBuffer)
+void Gravar_Produto(Produto *produtos, int n_produtos, int ctrl_produtosBuffer)
 {
+    FILE* arq;
     arq = fopen("produtos.dat", "wb");
     if (arq != NULL)
     {
@@ -83,7 +86,7 @@ void Atualizar_Produto(Produto* produtos, int *n_produtos)
 
             else
             {
-                printf("-Atualizar Nome(1)\n -Categoria(2)\n -Quantidade(3)\n -Preco(4)\n -Excluir Produto(5)\n -Retornar(6)\n\n>> ");
+                printf("\n-Atualizar Nome(1)\n -Categoria(2)\n -Quantidade(3)\n -Preco(4)\n -Excluir Produto(5)\n -Retornar(6)\n\n>> ");
                 scanf("%d", &_atualizaroque);
 
                 if(_atualizaroque >= 1 && _atualizaroque < 6)
@@ -150,10 +153,10 @@ void Atualizar_Produto(Produto* produtos, int *n_produtos)
 
                                 if(resp == 1)
                                 {
-                                    //Utilizando o ?ltimo valor de i usado no la?o de busca (produto encontrado)
+                                    //Utilizando o ultimo valor de i usado no laco de busca (produto encontrado)
                                     for(i=i; i < *n_produtos - 1; i++)
                                     {
-                                        //Copiando os dados da posi??o posterior para o espa?o deletado
+                                        //Copiando os dados da posicao posterior para o espaco deletado
                                         j = i + 1;
 
                                         (produtos+i)->id = (produtos+j)->id;
@@ -186,7 +189,7 @@ void Consultar_Produto(Produto* produtos, int n_produtos)
 
     printf("\t\tCONSULTAR DADOS DE PRODUTOS\n\n");
 
-    // Exibir que n?o existem registros
+    // Exibir que nao existem registros
     if(n_produtos == 0)
     {
         printf("Nenhum registro encontrado.\n");

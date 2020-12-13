@@ -3,11 +3,13 @@
 #include <string.h>
 #include "operacoes.h"
 #include "cliente.h"
+#include <locale.h>
 
 //A cada tres cadastros, abre arquivo, upa dados, fecha arquivo
 void Cadastrar_Cliente(Cliente *clientes, int *n_clientes)
 {
-	
+	setlocale(LC_ALL, "Portuguese");
+		   
 	int i = *n_clientes;
 	
     system("cls||clear");
@@ -23,7 +25,7 @@ void Cadastrar_Cliente(Cliente *clientes, int *n_clientes)
      */
 
     /* ID (int) */
-    printf("Preencha os dados do Cliente (%d):\nID: ", *n_clientes);
+    printf("Preencha os dados do Cliente (%d):\nID: ", *n_clientes + 1);
     scanf("%d", &(clientes + i)->id);
 
     /* CPF (int) */
@@ -56,6 +58,19 @@ void Cadastrar_Cliente(Cliente *clientes, int *n_clientes)
     *n_clientes += 1;
 }
 
+void Gravar_Cliente(Cliente *clientes, int n_clientes, int ctrl_clientesBuffer)
+{
+    FILE* arq;
+    arq = fopen("clientes.dat", "wb");
+    if (arq != NULL)
+    {
+        fwrite(&n_clientes, sizeof(int), 1, arq);
+        fwrite(&ctrl_clientesBuffer, sizeof(int), 1, arq);
+        fwrite(clientes, sizeof(Cliente), n_clientes, arq);
+        fclose(arq);
+    }
+}
+
 //No fim da funcao, abre arquivo, envia dados, fecha arquivo
 void Atualizar_Cliente(Cliente* clientes, int *n_clientes)
 {
@@ -64,6 +79,9 @@ void Atualizar_Cliente(Cliente* clientes, int *n_clientes)
     /*===========================================================*/
 
     int _atualizaroque = 0, _buscaID, i = 0, j = 0, resp;
+    
+    FILE *arq_clientes;     //clientes.dat
+    arq_clientes = fopen("clientes.dat", "wb");
 
         do
         {
@@ -79,7 +97,7 @@ void Atualizar_Cliente(Cliente* clientes, int *n_clientes)
 
             else
             {
-                printf("-Atualizar Nome(1)\n -Atualizar CPF(2)\n -Atualizar Endereco(3)\n -Atualizar Email(4)\n -Excluir Cliente(5)\n -Retornar(6)\n\n>> ");
+                printf("\n-Atualizar Nome(1)\n -Atualizar CPF(2)\n -Atualizar Endereco(3)\n -Atualizar Email(4)\n -Excluir Cliente(5)\n -Retornar(6)\n\n>> ");
                 scanf("%d", &_atualizaroque);
 
                 //Quebra o loop e volta para o in?cio
@@ -121,7 +139,7 @@ void Atualizar_Cliente(Cliente* clientes, int *n_clientes)
                         break;
 
                         case 3:
-                            printf("Digite o novo endere?o do cliente (%d):\n>> ", i+1);
+                            printf("Digite o novo endereco do cliente (%d):\n>> ", i+1);
                             fflush(stdin);
                             fgets((clientes+i)->endereco, CHAR_M, stdin);
                             (clientes+i)->endereco[strcspn((clientes+i)->endereco, "\n")] = 0;
@@ -140,7 +158,7 @@ void Atualizar_Cliente(Cliente* clientes, int *n_clientes)
 
                         case 5:
                             printf("Voce realmente deseja excluir o cliente (%d) ?\n", i+1);
-                            printf(" -Sim(1)\n -N?o(2)\n\n>> ");
+                            printf(" -Sim(1)\n -Nao(2)\n\n>> ");
                             scanf("%d", &resp);
 
                             if(resp == 1)
@@ -156,12 +174,11 @@ void Atualizar_Cliente(Cliente* clientes, int *n_clientes)
                                     (clientes+i)->cpf = (clientes+j)->cpf;
                                     strcpy(((clientes+i)->endereco), ((clientes+j)->endereco));
                                     strcpy(((clientes+i)->email), ((clientes+j)->email));
-
                                 }
 
                                 *n_clientes -= 1;
 
-                                printf("Exclus?o feita com sucesso!");
+                                printf("Exclusao feita com sucesso!");
                                 Loop_Tela();
                             }
                         break;
@@ -171,10 +188,15 @@ void Atualizar_Cliente(Cliente* clientes, int *n_clientes)
 
         }while(_atualizaroque != 6);
 
+        fwrite(n_clientes, sizeof(int), 1, arq_clientes);
+        //fwrite(&ctrl_clientesBuffer, sizeof(int), 1, arq_clientes);
+        fwrite(clientes, sizeof(Cliente), *n_clientes, arq_clientes);
+        fclose(arq_clientes);
+
     Loop_Tela();
 }
 
-//Traz para a memória, fecha arquivo, consulta, libera memória ou consulta direto do arquivo (mais eficaz)
+//Traz para a memoria, fecha arquivo, consulta, libera memÃ³ria ou consulta direto do arquivo (mais eficaz)
 void Consultar_Cliente(Cliente* clientes, int n_clientes)
 {
 	int i;
@@ -198,18 +220,10 @@ void Consultar_Cliente(Cliente* clientes, int n_clientes)
             printf("\tID:       %d\n", (clientes+i)->id);
             printf("\tCPF:      %d\n", (clientes+i)->cpf);
             printf("\tNome:     %s\n", (clientes+i)->nome);
-            printf("\tEndere?o: %s\n", (clientes+i)->endereco);
+            printf("\tEndereco: %s\n", (clientes+i)->endereco);
             printf("\tEmail:    %s\n", (clientes+i)->email);
         }
     }
 
     Loop_Tela();
 }
-
-
-
-
-
-
-
-

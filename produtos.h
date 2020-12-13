@@ -7,8 +7,8 @@
 #include "structs.h"
 
 void Cadastrar_Produto(Produto*, int*);
-void Gravar_Produto(FILE*, Produto*, int, int);
+void Gravar_Produto(Produto*, int, int);
 void Atualizar_Produto(Produto*, int*);
 void Consultar_Produto(Produto*, int);
 
-#endif // PRODUTOS_H_INCLUDED
+#endif // PRODUTOS_H_INCLUDED,

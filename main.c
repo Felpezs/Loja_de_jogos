@@ -139,7 +139,7 @@ int main()
                                     
                                     if(clientes == NULL)
                                     {
-                                    	printf("\nERRO NA MEM�RIA");
+                                    	printf("\nERRO NA MEMORIA");
                                     	return 55;
 									}
                                 }
@@ -176,7 +176,7 @@ int main()
                                     
                                     if(produtos == NULL)
                                     {
-                                    	printf("\nERRO NA MEM�RIA");
+                                    	printf("\nERRO NA MEMORIA");
                                     	return 55;
 									}
                                 }
@@ -244,12 +244,14 @@ int main()
 
                             //Frequencia de uso: 1
                             Atualizar_Cliente(clientes, &qntd_clientes);
+                            Gravar_Cliente(clientes, qntd_clientes, ctrl_clienteBuffer);
                         break;
 
                         case 2:
 
                             // Frequencia de uso: 2
                             Atualizar_Produto(produtos, &qntd_produtos);
+                            Gravar_Produto(produtos, qntd_produtos, ctrl_produtosBuffer);
                         break;
                     }
 
@@ -263,8 +265,8 @@ int main()
                 //gravar da memoria para o disco a cada 3 registros de vendas
                 if((qntd_vendas % 3) == 0)
                 {
-                    Gravar_Venda(arq_vendas, vendas, qntd_vendas, ctrl_vendasBuffer);
-                    Gravar_Produto(arq_produtos, produtos, qntd_produtos, ctrl_produtosBuffer); /* gravar estoque atualizado */
+                    Gravar_Venda(vendas, qntd_vendas, ctrl_vendasBuffer);
+                    Gravar_Produto(produtos, qntd_produtos, ctrl_produtosBuffer); /* gravar estoque atualizado */
                 }
             	break;
         }
@@ -274,8 +276,8 @@ int main()
     //gravar os ultimos registros remascentes de vendas
     if((qntd_vendas % 3) != 0)
     {
-        Gravar_Venda(arq_vendas, vendas, qntd_vendas, ctrl_vendasBuffer);
-        Gravar_Produto(arq_produtos, produtos, qntd_produtos, ctrl_produtosBuffer); /* gravar estoque atualizado */
+        Gravar_Venda(vendas, qntd_vendas, ctrl_vendasBuffer);
+        Gravar_Produto(produtos, qntd_produtos, ctrl_produtosBuffer); /* gravar estoque atualizado */
     }
     
 	free(clientes);

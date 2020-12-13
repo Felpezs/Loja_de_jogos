@@ -7,6 +7,7 @@
 #include "structs.h"
 
 void Cadastrar_Cliente(Cliente*, int*);
+void Gravar_Cliente(Cliente *, int, int);
 void Atualizar_Cliente(Cliente*, int*);
 void Consultar_Cliente(Cliente*, int);
 

@@ -39,8 +39,9 @@ void Consultar_Vendas(Venda* vendas, int n_vendas)
 }
 
 //Funcao para gravar os dados das vendas no disco por escrita binaria e depois fechar o arq
-void Gravar_Venda(FILE *arq, Venda *vendas, int n_vendas, int ctrl_vendasBuffer)
+void Gravar_Venda(Venda *vendas, int n_vendas, int ctrl_vendasBuffer)
 {
+    FILE *arq;
     //abrir o arquivo de vendas para gravacao binaria
     arq = fopen("vendas.dat", "wb");
     if (arq != NULL)
@@ -192,6 +193,7 @@ void Comprar(Cliente* clientes, Produto* produtos, Venda** vendas, int n_cliente
 	}
     Loop_Tela();
 }
+
 
 void Loop_Tela()
 {
